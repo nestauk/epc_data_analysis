@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from typing import Union
 
 from epc_data_analysis import get_yaml_config, Path, PROJECT_DIR
-from epc_data_analysis.analysis.notebooks import my_widgets
+from epc_data_analysis.analysis.notebooks.notebook_utils import my_widgets
 
 import warnings
 
