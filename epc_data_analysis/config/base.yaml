@@ -1,0 +1,6 @@
+EPC_DATASET_PATH: "/inputs/EPC_data/all-domestic-certificates/"
+EPC_TOY_PATH: "/inputs/EPC_data/all-domestic-certificates/domestic-W06000015-Cardiff/certificates.csv"
+
+POSTCODE_PATH: "/inputs/postcodes/ukpostcodes.csv"
+
+FIGURE_PATH: "/outputs/data/Wales figures/"
