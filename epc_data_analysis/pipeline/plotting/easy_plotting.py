@@ -119,7 +119,7 @@ def plot_feature_by_subcategories(
 
     if subcategory is not None:
         df = df.loc[df[category] == subcategory]
-        tag = " for " + subcategory
+        tag = " for " + str(subcategory)
 
     if plot_title is None:
         plot_title = feature_of_interest + tag
@@ -155,6 +155,9 @@ def plot_groups_by_other_groups(
     plot_title=None,
     y_label="",
     x_label="",
+    plot_kind="bar",
+    color_list=None,
+    use_color_list=False,
     y_ticklabel_type=None,
     normalize=False,
 ):
@@ -180,11 +183,132 @@ def plot_groups_by_other_groups(
     if feature_2_order is not None:
         group_by_group = group_by_group[feature_2_order]
 
+    if color_list is None:
+        color_list = ["green", "greenyellow", "yellow", "orange", "red"]
+
+    if use_color_list:
+
+        group_by_group.plot(
+            kind=plot_kind,
+            color=color_list,
+            # color=["green", "greenyellow", "yellow", "orange", "red"]
+            # color=list("rggkymg"),
+        )
+
+    else:
+
+        group_by_group.plot(
+            kind=plot_kind,
+            # color=color_list,
+            # color=["green", "greenyellow", "yellow", "orange", "red"]
+            # color=list("rggkymg"),
+            cmap="RdYlGn",
+        )
+
+    # Change legen order, not used ehre
+    # ax = plt.gca()
+    # handles, labels = ax.get_legend_handles_labels()
+    # handle_label_dict =  {k:v for (k,v) in zip(labels, handles)}
+    # new_labels = ['Very Good', 'Good', 'Average', 'Poor', 'Very Poor']
+    # new_handles = [handle_label_dict[new_label] for new_label in new_labels]
+
+    ax = plt.gca()
+
+    if y_ticklabel_type == "k":
+        division_type = "k"
+        division_int = 1000
+
+    elif y_ticklabel_type == "m":
+        division_type = "m"
+        division_int = 1000000
+
+    elif y_ticklabel_type == "" or y_ticklabel_type is None:
+        division_type = ""
+        division_int = 1
+
+    elif y_ticklabel_type == "%":
+        division_type = "%"
+        division_int = 1
+
+    else:
+        raise IOError("Invalid value: y_ticklabel has to be '', 'm', or 'k'")
+
+    ylabels = [
+        "{:.0f}".format(x / division_int) + division_type for x in ax.get_yticks()
+    ]
+
+    ax.set_yticklabels(ylabels)
+
+    if plot_title is None:
+        plot_title = feature_2 + " by " + feature_1
+        if normalize:
+            plot_title += " (%)"
+
+    plt.title(plot_title)
+    plt.ylabel(y_label)
+    plt.xlabel(x_label)
+    plt.xticks(rotation=0)
+
+    plt.tight_layout()
+    plt.savefig(FIG_PATH + feature_2 + "_by_" + feature_1 + ".png")
+    plt.show()
+
+
+def plot_groups_by_other_groups_2(
+    df,
+    feature_1,
+    feature_2,
+    feature_1_order=None,
+    feature_2_order=None,
+    plot_title=None,
+    y_label="",
+    x_label="",
+    color_list=None,
+    y_ticklabel_type=None,
+    normalize=False,
+):
+
+    df = df[df[feature_1].notna()]
+    df = df[df[feature_2].notna()]
+
+    feature_1_types = list(set(df[feature_1].sort_index()))
+    feature_2_types = list(set(df[feature_2].sort_index()))
+
+    feature_1 = [
+        "MAINHEAT_ENERGY_EFF",
+        "HOT_WATER_ENERGY_EFF",
+        "FLOOR_ENERGY_EFF",
+        "WINDOWS_ENERGY_EFF",
+        "WALLS_ENERGY_EFF",
+        "ROOF_ENERGY_EFF",
+        "MAINHEATC_ENERGY_EFF",
+        "LIGHTING_ENERGY_EFF",
+    ]
+
+    # if feature_1_order is not None:
+    #   feature_1_types = feature_1_order
+
+    feat_bar_dict = {}
+
+    for feat2 in feature_2_types:
+        dataset_of_interest = df.loc[df[feature_2] == feat2][feature_1]
+        data_of_interest = dataset_of_interest.value_counts()
+        feat_bar_dict[feat2] = data_of_interest
+
+    group_by_group = pd.DataFrame(feat_bar_dict, index=feature_1_types)
+
+    # if feature_2_order is not None:
+    #    group_by_group = group_by_group[feature_2_order]
+
+    if color_list is None:
+        color_list = ["green", "greenyellow", "yellow", "orange", "red"]
+
     group_by_group.plot(
         kind="bar",
-        color=["green", "greenyellow", "yellow", "orange", "red"]
+        # color=color_list,
+        # color=["green", "greenyellow", "yellow", "orange", "red"]
         # color=list("rggkymg"),
-        # colormap="RdYlGn_r"
+        colormap="Greens_r",
     )
 
     # Change legen order, not used ehre
