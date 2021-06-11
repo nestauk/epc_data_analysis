@@ -1,5 +1,8 @@
 import pandas as pd
 import os
+from dask import delayed
+import dask.dataframe as dd
+
 
 from epc_data_analysis import get_yaml_config, Path, PROJECT_DIR
 
@@ -13,12 +16,18 @@ epc_data_config = get_yaml_config(
 epc_data_path = str(PROJECT_DIR) + epc_data_config["EPC_DATASET_PATH"]
 
 
-def load_EPC_data(cert_subset="all"):
+def load_EPC_data(cert_subset="all", usecols=None):
     """Load and return EPC dataset, or specific subset, as pandas dataframe.
 
     Return:
         EPC_certs (pandas dataframe): EPC certificate data.
     """
+
+    sample_file_path = epc_data_path + "/domestic-W06000015-Cardiff/certificates.csv"
+    sample_df = pd.read_csv(sample_file_path)
+
+    if usecols == None:
+        usecols = sample_df.columns
 
     if cert_subset == "Wales":
 
@@ -26,6 +35,7 @@ def load_EPC_data(cert_subset="all"):
             pd.read_csv(
                 epc_data_path + directory + "/certificates.csv",
                 low_memory=False,
+                usecols=usecols,
             )
             for directory in os.listdir(epc_data_path)
             if directory.startswith("domestic-W")  # only Wales data
@@ -37,6 +47,7 @@ def load_EPC_data(cert_subset="all"):
             pd.read_csv(
                 epc_data_path + directory + "/certificates.csv",
                 low_memory=False,
+                usecols=usecols,
             )
             for directory in os.listdir(epc_data_path)
             if directory.startswith("domestic-E")  # only England data
@@ -44,13 +55,20 @@ def load_EPC_data(cert_subset="all"):
 
     elif cert_subset == "all":
 
+        epc_files = [file for file in os.listdir(epc_data_path)]
+        epc_files = [
+            file
+            for file in epc_files
+            if not file.startswith(".") and file != "LICENCE.txt"
+        ]
+
         EPC_certs = [
             pd.read_csv(
                 epc_data_path + directory + "/certificates.csv",
                 low_memory=False,
+                usecols=usecols,
             )
-            for directory in os.listdir(epc_data_path)[:10]
-            if not directory.startswith(".")  # all data (except hidden folders)
+            for directory in epc_files  # all data (except hidden folders)
         ]
 
     else:
