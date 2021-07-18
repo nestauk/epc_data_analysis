@@ -17,6 +17,16 @@ import pandas as pd
 def get_new_EPC_rating_features(df):
     """Get new EPC rating features related to EPC ratings.
 
+        CURR_ENERGY_RATING_NUM: EPC rating representeed as number
+        high number = high rating.
+
+        ENERGY_RATING_CAT: EPC category.
+        A-B, C-D or E-G
+
+        DIFF_POT_ENERGY_RATING: Difference potential and current
+        energy rating.
+
+
     Parameters
     ----------
     df : pandas.Dataframe
@@ -40,8 +50,21 @@ def get_new_EPC_rating_features(df):
         "INVALID!": 0,
     }
 
+    EPC_cat_dict = {
+        "A": "A-B",
+        "B": "A-B",
+        "C": "C-D",
+        "D": "C-D",
+        "E": "E-G",
+        "F": "E-G",
+        "G": "E-G",
+    }
+
     # EPC rating in number instead of letter
     df["CURR_ENERGY_RATING_NUM"] = df.CURRENT_ENERGY_RATING.map(rating_dict)
+
+    # EPC rating in category (A-B, C-D or E-G)
+    df["ENERGY_RATING_CAT"] = df.CURRENT_ENERGY_RATING.map(EPC_cat_dict)
 
     # Numerical difference between current and potential energy rating (A-G)
     df["DIFF_POT_ENERGY_RATING"] = (
