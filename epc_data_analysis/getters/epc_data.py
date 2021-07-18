@@ -28,20 +28,20 @@ def load_EPC_data(subset="all", usecols=None, low_memory=False):
 
     Parameters
     ----------
-        subset: 'all', 'Wales', 'England', default='all'
+    subset : {'all', 'Wales', 'England'}, default='all'
         EPC certificate area subset.
 
-        usecols: list, default=None
+    usecols : list, default=None
         List of features/columns to load from EPC dataset.
 
-        low_memory: bool, default=False
+    low_memory : bool, default=False
         Internally process the file in chunks, resulting in lower memory use while parsing,
         but possibly mixed type inference.
         To ensure no mixed types either set False, or specify the type with the dtype parameter.
 
     Return
     ---------
-        EPC_certs: pandas.DateFrame
+    EPC_certs : pandas.DateFrame
         EPC certificate data for given area and features."""
 
     # Load data
@@ -86,14 +86,9 @@ def load_EPC_data(subset="all", usecols=None, low_memory=False):
         # Load
         epc_files = [
             file
-            for file in os.listdir(epc_data_path)
+            for file in os.listdir(epc_data_path)[:500]
             if not file.startswith(".") and file != "LICENCE.txt"
         ]
-        # epc_files = [
-        # file
-        # for file in epc_files
-        #  if not file.startswith(".") and file != "LICENCE.txt"
-        # ]
 
         # Load specific location certificates and features
         EPC_certs = [

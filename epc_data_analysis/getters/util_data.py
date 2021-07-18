@@ -18,11 +18,11 @@ def get_location_data():
 
     Parameters
     ----------
-        None
+    None
 
     Return
     ---------
-        location_data_df: pandas.DateFrame
+    location_data_df : pandas.DateFrame
         Location data (postcode, latitude, longitude).
     """
 
@@ -48,11 +48,11 @@ def get_WIMD_data():
 
     Parameters
     ----------
-        None
+    None
 
     Return
     ---------
-        wimd_df: pandas.DateFrame
+    wimd_df : pandas.DateFrame
         Wales Index of Multiple Deprivation data."""
 
     # Load data
@@ -65,18 +65,18 @@ def merge_dataframes(df1, df2, merge_feature):
 
     Parameters
     ----------
-        df1: pandas.Dataframe
+    df1 : pandas.Dataframe
         First dataframe to be merged with second dataframe.
 
-        df2: pandas.Dataframe
+    df2 : pandas.Dataframe
         Second dataframe to be merged with first dataframe.
 
-        merge_feature: string
+    merge_feature : str
         Feature/column used to merge two dataframes.
 
     Return
     ---------
-        merged_df: pandas.DateFrame
+    merged_df : pandas.DateFrame
         Merged new dataframe."""
 
     # Fix postcode format before merging
