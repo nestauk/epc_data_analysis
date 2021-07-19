@@ -513,20 +513,20 @@ def plot_correlation(
     Parameters
     ----------
     df : pandas.DataFrame
-    Dataframe which holds features for which to plot correlation.
+     Dataframe which holds features for which to plot correlation.
 
     feature_1 : str
-    Feature to plot on x-axis.
+        Feature to plot on x-axis.
 
     feature_2 : str
-    Feature to plot on y-axis.
+        Feature to plot on y-axis.
 
     with_hist_subplots: bool, default=True
         Plot histogram subplots above and besides correlation plot
         for both features.
 
     ylim_max : int, default=100
-    Limit for y-axis for better readbility
+        Limit for y-axis for better readbility
 
     plot_title : str, None, default=None
         Title to display above plot.
@@ -543,8 +543,10 @@ def plot_correlation(
         If "" or "auto", filename is generated automatically."""
 
     # Set plot title
+    tag = " with hist subplots" if with_hist_subplots else ""
+
     if plot_title is None:
-        plot_title = "Correlation " + feature_2 + " by " + feature_1
+        plot_title = "Correlation " + feature_2 + " by " + feature_1 + tag
 
     # With subplots with histogram on sides
     if with_hist_subplots:
@@ -594,8 +596,8 @@ def plot_correlation(
         ax.set_ylim([0.0, ylim_max])
 
         # Set labels
-        plt.ylabel(feature_1)  # or y_label
-        plt.xlabel(feature_2)  # or x_label
+        plt.xlabel(feature_1)  # or x_label
+        plt.ylabel(feature_2)  # or y_label
 
     # Save figure
     save_figure(plt, save_filename, plot_title)
