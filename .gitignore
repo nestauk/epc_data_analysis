@@ -106,7 +106,10 @@ Recycling/
 # exclude /inputs and /outputs/data except top-level markdown
 /inputs/*
 !/inputs/*.md
-/outputs/data/*
+/outputs/data/Wales/Figures/*
+!/outputs/data/Wales/Figures/.gitkeep
+/outputs/data/Wales/Kepler/*
+!/outputs/data/Wales/Kepler/.gitkeep
 !/outputs/data/*.md
 /outputs/models/*
 !/outputs/models/*.md
