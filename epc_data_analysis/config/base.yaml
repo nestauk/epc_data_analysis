@@ -4,4 +4,4 @@ EPC_TOY_PATH: "/inputs/EPC_data/all-domestic-certificates/domestic-W06000015-Car
 POSTCODE_PATH: "/inputs/ukpostcodes.csv"
 WIMD_PATH: "/inputs/wimd_df.csv"
 
-FIGURE_PATH: "/outputs/data/Wales figures/"
+FIGURE_PATH: "/outputs/data/Wales/Figures/"
