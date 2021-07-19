@@ -34,11 +34,12 @@ You can find and download the entire EPC dataset [here](https://epc.opendatacomm
 
 ```bash
 # Get the repository
-$ git clone https://github.com/nestauk/EPC_data_analysis
+$ git clone https://github.com/nestauk/EPC_data_analysis.git
 
 # Setup
 $ cd EPC_data_analysis
 $ make install
+$ conda activate epc_data_analysis
 
 # Prepare input data
 $ make inputs-pull
