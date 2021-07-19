@@ -6,16 +6,18 @@ You can use this repository to faciliate the analysis of the EPC dataset.
 
 ### **Example Application: Wales**
 
-As a first application, we analysed the **CO2 emissions and housing energy efficiency of properties in Wales**, with a special focus on differences **across sectors** (social rental, private rental and owner-occupied). The full report can be found [here](https://docs.google.com/document/d/1F-1_5ZZal20pfOWwBaQ-6scv-p4oxDkUdR62ADFJyF4/edit?usp=sharing). Check out the following Jupyter Notebooks in this directory `EPC_data_analysis/analysis/notebooks/`:
+As a first application, we analysed the **CO2 emissions and housing energy efficiency of properties in Wales**, with a special focus on differences **across sectors** (social rental, private rental and owner-occupied). The full report can be found [here](https://docs.google.com/document/d/1F-1_5ZZal20pfOWwBaQ-6scv-p4oxDkUdR62ADFJyF4/edit?usp=sharing). Have a look at the following Jupyter Notebooks in this directory `EPC_data_analysis/analysis/notebooks/`:
 
 - [General Wales EPC Analysis](https://github.com/nestauk/EPC_data_analysis/blob/0_epc_wales_analysis/epc_data_analysis/analysis/notebooks/Wales_EPC_IMD_Analysis.ipynb)
 - [Visualisation with Kepler](https://github.com/nestauk/EPC_data_analysis/blob/0_epc_wales_analysis/epc_data_analysis/analysis/notebooks/Wales_EPC_IMD_Analysis_with_Kepler.ipynb)
+
+You can check out some EPC visualisations [here](https://athrado.github.io/data_viz/).
 
 ### **Data**
 
 You can find and download the entire EPC dataset from [here](https://epc.opendatacommunities.org/).
 
-### **Future Work**
+### Ongoing and Future Work
 
 - [ ] Analysis on the entire UK
 
