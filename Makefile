@@ -26,8 +26,6 @@ define execute_in_env
 	source bin/conda_activate.sh && conda_activate && $1
 endef
 
-
-
 .PHONY: test-setup
 ## Test that everything has been setup
 test-setup:
@@ -96,6 +94,7 @@ conda-create: .conda_exists
 .PHONY: conda-update
 ## Update the conda-environment based on changes to `environment.yaml`
 conda-update:
+
 	conda env update -n ${REPO_NAME} -f environment.yaml
 	$(MAKE) pip-install
 
@@ -135,7 +134,7 @@ setup-metaflow:
 .PHONY: setup-bucket
 setup-bucket:
 	@echo S3
-	$(call execute_in_env, ${SHELL} ./bin/create_bucket.sh)
+cute_in_env, ${SHELL} ./bin/create_bucket.sh)
 
 .PHONY: setup-github
 setup-github:
