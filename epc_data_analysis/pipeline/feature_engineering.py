@@ -113,167 +113,115 @@ def get_heating_features(df, fine_grained_HP_types=False):
     df : pandas.DataFrame
         Updated dataframe with heating system and source."""
 
-    general_type = []
-    heating_type = []
+    # Collections
+    heating_system_types = []
+    heating_source_types = []
 
+    # Get heating types
     heating_types = df["MAINHEAT_DESCRIPTION"]
 
     # Get specific and general heating category for each entry
     for heating in heating_types:
 
+        # Set default value
+        system_type = "unknown"
+        source_type = "unknown"
+
+        # If heating value exists
         if not pd.isnull(heating):
 
             # Lowercase
             heating = heating.lower()
 
             # Different heat pump types
+            # --------------------------
 
             if "ground source heat pump" in heating:
-                h_type = "ground source heat pump"
-                g_type = "electric"
+                system_type = "ground source heat pump"
+                source_type = "electric"
 
             elif "air source heat pump" in heating:
-                h_type = "air source heat pump"
-                g_type = "electric"
+                system_type = "air source heat pump"
+                source_type = "electric"
 
             elif "water source heat pump" in heating:
-                h_type = "water source heat pump"
-                g_type = "electric"
+                system_type = "water source heat pump"
+                source_type = "electric"
 
             elif "heat pump" in heating:
-                h_type = "heat pump"
-                g_type = "electric"
+                system_type = "heat pump"
+                source_type = "electric"
 
             # Electric heaters
+            # --------------------------
 
             elif "electric storage heaters" in heating:
-                h_type = "storage heater"
-                g_type = "electric"
+                system_type = "storage heater"
+                source_type = "electric"
 
             elif "electric underfloor heating" in heating:
-                h_type = "underfloor heating"
-                g_type = "electric"
-
-            # Boiler and radiator
-
-            elif "boiler and radiator" in heating:
-                if "gas" in heating:
-                    h_type = "boiler and radiator"
-                    g_type = "gas"
-
-                elif ", oil" in heating:  # with preceeding comma (!= "boiler")
-                    h_type = "boiler and radiator"
-                    g_type = "oil"
-
-                elif "lpg" in heating:
-                    h_type = "boiler and radiator"
-                    g_type = "LPG"
-
-                elif "electric" in heating:
-                    h_type = "boiler and radiator"
-                    g_type = "electric"
-
-                else:
-                    h_type = "boiler and radiator"
-                    g_type = "unknown"
-
-            # Boiler and underfloor heating
-
-            elif "boiler and underfloor" in heating or "boiler & underfloor" in heating:
-
-                if "gas" in heating:
-                    h_type = "boiler and underfloor"
-                    g_type = "gas"
-
-                elif ", oil" in heating:  # with preceeding comma (!= "boiler")
-                    h_type = "boiler and underfloor"
-                    g_type = "oil"
-
-                elif "lpg" in heating:
-                    h_type = "boiler and underfloor"
-                    g_type = "LPG"
-
-                elif "electric" in heating:
-                    h_type = "boiler and underfloor"
-                    g_type = "electric"
-
-                else:
-                    h_type = "boiler and underfloor"
-                    g_type = "unknown"
-
-            # Community scheme
-
-            elif "community scheme" in heating:
-                if "gas" in heating:
-                    h_type = "community scheme"
-                    g_type = "gas"
-
-                elif ", oil" in heating:  # with preceeding comma (!= "boiler")
-                    h_type = "community scheme"
-                    g_type = "oil"
-
-                elif "lpg" in heating:
-                    h_type = "community scheme"
-                    g_type = "LPG"
-
-                elif "electric" in heating:
-                    h_type = "community scheme"
-                    g_type = "electric"
-
-                else:
-                    h_type = "community scheme"
-                    g_type = "unknown"
-
-            # Heater (not specified)
-
-            elif "heater" in heating:
-                if "gas" in heating:
-                    h_type = "heater"
-                    g_type = "gas"
-
-                elif ", oil" in heating:  # with preceeding comma (!= "boiler")
-                    h_type = "heater"
-                    g_type = "oil"
-
-                elif "lpg" in heating:
-                    h_type = "heater"
-                    g_type = "LPG"
-
-                elif "electric" in heating:
-                    h_type = "heater"
-                    g_type = "electric"
-
-                else:
-                    h_type = "heater"
-                    g_type = "unknown"
+                system_type = "underfloor heating"
+                source_type = "electric"
 
             # Warm air
+            # --------------------------
 
             elif "warm air" in heating:
-                h_type = "warm air"
-                g_type = "electric"
+                system_type = "warm air"
+                source_type = "electric"
 
-            else:
-                h_type = "unknown"
-                g_type = "unknown"
+            # Boiler and radiator / Boiler and underfloor / Community scheme / Heater (unspecified)
+            # --------------------------
 
-        # Unknown heating system
+            elif (
+                ("boiler and radiator" in heating)
+                or ("boiler & radiator" in heating)
+                or ("boiler and underfloor" in heating)
+                or ("boiler & underfloor" in heating)
+                or ("community scheme" in heating)
+                or ("heater" in heating)  # not specified heater
+            ):
 
-        else:
-            h_type = "unknown"
-            g_type = "unknown"
+                # Set heating system dict
+                heating_system_dict = {
+                    "boiler and radiator": "boiler and radiator",
+                    "boiler & radiator": "boiler and radiator",
+                    "boiler and underfloor": "boiler and underfloor",
+                    "boiler & underfloor": "boiler and underfloor",
+                    "community scheme": "community scheme",
+                    "heater": "heater",  # not specified heater (otherwise handeld above)
+                }
+
+                # Set heating source dict
+                heating_source_dict = {
+                    "gas": "gas",
+                    ", oil": "oil",  # with preceeding comma (!= "boiler")
+                    "lpg": "LPG",
+                    "electric": "electric",
+                }
+
+                # If heating system word is found, save respective system type
+                for word, system in heating_system_dict.items():
+                    if word in heating:
+                        system_type = system
+
+                # If heating source word is found, save respective source type
+                for word, source in heating_source_dict.items():
+                    if word in heating:
+                        source_type = source
 
         # Don't differentiate between heat pump types
         if not fine_grained_HP_types:
 
-            if "heat pump" in h_type:
-                h_type = "heat pump"
+            if "heat pump" in system_type:
+                system_type = "heat pump"
 
-        # Save heating type
-        general_type.append(g_type)
-        heating_type.append(h_type)
+        # Save heating system type and source type
+        heating_system_types.append(system_type)
+        heating_source_types.append(source_type)
 
-    df["HEATING_SYSTEM"] = heating_type
-    df["HEATING_SOURCE"] = general_type
+    # Add heating system and source to df
+    df["HEATING_SYSTEM"] = heating_system_types
+    df["HEATING_SOURCE"] = heating_source_types
 
     return df
