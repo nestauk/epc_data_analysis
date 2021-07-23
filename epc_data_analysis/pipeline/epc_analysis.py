@@ -9,11 +9,6 @@ Last updated on 13/07/2021
 # ---------------------------------------------------------------------------------
 
 # Imports
-
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
 from epc_data_analysis import get_yaml_config, Path, PROJECT_DIR
 
 # ---------------------------------------------------------------------------------
@@ -51,9 +46,9 @@ def get_emissions_info(df, feature_1, feature_2):
         Dictionary holding data on emissions (absolute, relative and mean)."""
 
     # Total emissions
-    total_emissions = np.sum(df["CO2_EMISSIONS_CURRENT"].sum())
-    total_emissions_by_area = np.sum(df["CO2_EMISS_CURR_PER_FLOOR_AREA"].sum())
-    total = total_emissions = np.sum(df[feature_1].sum())
+    total_emissions = df["CO2_EMISSIONS_CURRENT"].sum()
+    total_emissions_by_area = df["CO2_EMISS_CURR_PER_FLOOR_AREA"].sum()
+    total = total_emissions = df[feature_1].sum()
 
     # Get absolute, relative and mean emissions
     emissions_rel = df.groupby(feature_2)[feature_1].sum() / total * 100
