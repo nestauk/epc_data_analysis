@@ -2,7 +2,7 @@
 """"
 Created May 2021
 @author: Julia Suter
-Last updated on 23/07/2021
+Last updated on 26/07/2021
 """
 
 # ---------------------------------------------------------------------------------
@@ -44,64 +44,43 @@ def load_EPC_data(subset="all", usecols=None, low_memory=False):
     EPC_certs : pandas.DateFrame
         EPC certificate data for given area and features."""
 
-    # Load data
+    # Load sample data
     sample_file_path = epc_data_path + "/domestic-W06000015-Cardiff/certificates.csv"
     sample_df = pd.read_csv(sample_file_path)
 
-    # Get all columns if not other specified
-    if usecols == None:
-        usecols = sample_df.columns
+    # Get all directories
+    all_directories = os.listdir(epc_data_path)
 
-    # Get Wales data
-    if subset == "Wales":
+    # Set subset dict to select respective subset directories
+    start_with_dict = {"Wales": "domestic-W", "England": "domestic-E"}
 
-        # Load specific location certificates and features
-        EPC_certs = [
-            pd.read_csv(
-                epc_data_path + directory + "/certificates.csv",
-                low_memory=low_memory,
-                usecols=usecols,
-            )
-            for directory in os.listdir(epc_data_path)
-            if directory.startswith("domestic-W")  # only Wales data
+    # Get directories for given subset
+    if subset in start_with_dict:
+        directories = [
+            dir for dir in all_directories if dir.startswith(start_with_dict[subset])
         ]
-
-    # Get England data
-    elif subset == "England":
-
-        # Load specific location certificates and features
-        EPC_certs = [
-            pd.read_csv(
-                epc_data_path + directory + "/certificates.csv",
-                low_memory=low_memory,
-                usecols=usecols,
-            )
-            for directory in os.listdir(epc_data_path)
-            if directory.startswith("domestic-E")  # only England data
-        ]
-
-    # Get all data
-    elif subset == "all":
-
-        # Load
-        epc_files = [
-            file
-            for file in os.listdir(epc_data_path)[:500]
-            if not file.startswith(".") and file != "LICENCE.txt"
-        ]
-
-        # Load specific location certificates and features
-        EPC_certs = [
-            pd.read_csv(
-                epc_data_path + directory + "/certificates.csv",
-                low_memory=low_memory,
-                usecols=usecols,
-            )
-            for directory in epc_files  # all data (except hidden folders)
-        ]
-
     else:
-        raise IOError("'{}' is not a valid subset of the EPC dataset.".format(subset))
+        if subset == "all":
+            directories = [
+                file
+                for file in all_directories
+                if not file.startswith(".") and file != "LICENCE.txt"
+            ]
+        else:
+            raise IOError(
+                "'{}' is not a valid subset of the EPC dataset.".format(subset)
+            )
+
+    # Load EPC certificates for given subset
+    # Only load columns of interest (if given)
+    EPC_certs = [
+        pd.read_csv(
+            epc_data_path + directory + "/certificates.csv",
+            low_memory=low_memory,
+            usecols=usecols,
+        )
+        for directory in directories
+    ]
 
     # Concatenate single dataframes into dataframe
     EPC_certs = pd.concat(EPC_certs, axis=0)
