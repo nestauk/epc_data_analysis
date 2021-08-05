@@ -23,7 +23,7 @@ epc_data_config = get_yaml_config(
 epc_data_path = str(PROJECT_DIR) + epc_data_config["EPC_DATASET_PATH"]
 
 
-def load_EPC_data(subset="all", usecols=None, low_memory=False):
+def load_epc_data(subset="all", usecols=None, low_memory=False):
     """Load and return EPC dataset, or specific subset, as pandas dataframe.
 
     Parameters
@@ -41,7 +41,7 @@ def load_EPC_data(subset="all", usecols=None, low_memory=False):
 
     Return
     ---------
-    EPC_certs : pandas.DateFrame
+    epc_certs : pandas.DateFrame
         EPC certificate data for given area and features."""
 
     # Load sample data
@@ -73,7 +73,7 @@ def load_EPC_data(subset="all", usecols=None, low_memory=False):
 
     # Load EPC certificates for given subset
     # Only load columns of interest (if given)
-    EPC_certs = [
+    epc_certs = [
         pd.read_csv(
             epc_data_path + directory + "/certificates.csv",
             low_memory=low_memory,
@@ -83,9 +83,9 @@ def load_EPC_data(subset="all", usecols=None, low_memory=False):
     ]
 
     # Concatenate single dataframes into dataframe
-    EPC_certs = pd.concat(EPC_certs, axis=0)
+    epc_certs = pd.concat(epc_certs, axis=0)
 
-    return EPC_certs
+    return epc_certs
 
 
 # ---------------------------------------------------------------------------------
@@ -94,7 +94,7 @@ def load_EPC_data(subset="all", usecols=None, low_memory=False):
 def main():
     """Main function for testing."""
 
-    epc_df = load_EPC_data(subset="Wales")
+    epc_df = load_epc_data(subset="Wales")
     print(epc_df.head())
 
 
