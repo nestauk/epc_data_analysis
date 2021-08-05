@@ -69,7 +69,7 @@ def save_figure(plt, save_filename, plot_title=None, file_extension=".png", dpi=
     if save_filename is not None:
         if save_filename == "" or save_filename == "auto":
 
-            # Automatically enerate filename
+            # Automatically generate filename
             if plot_title is not None:
                 save_filename = plot_title
                 save_filename = re.sub(" ", "_", save_filename)
