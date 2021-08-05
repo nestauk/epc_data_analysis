@@ -10,6 +10,7 @@ Last updated on 13/07/2021
 
 # Imports
 import pandas as pd
+from scipy.stats import pearsonr
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
@@ -469,8 +470,8 @@ def get_pearson_correlation(df, feature_1, feature_2):
     values_1 = df[feature_1]
     values_2 = df[feature_2]
 
-    # Compute correlation between features
-    correlation = values_1.corr(values_2)
+    # Compute correlation between features (discard p_value)
+    correlation, _ = pearsonr(values_1, values_2)
 
     return round(correlation, 3)
 
