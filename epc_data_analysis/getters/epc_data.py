@@ -44,10 +44,7 @@ def load_epc_data(subset="all", usecols=None, low_memory=False):
     epc_certs : pandas.DateFrame
         EPC certificate data for given area and features."""
 
-    # Get all directories
     all_directories = os.listdir(epc_data_path)
-
-    # Set subset dict to select respective subset directories
     start_with_dict = {"Wales": "domestic-W", "England": "domestic-E"}
 
     # Get directories for given subset
