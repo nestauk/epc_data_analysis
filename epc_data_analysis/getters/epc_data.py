@@ -44,10 +44,6 @@ def load_epc_data(subset="all", usecols=None, low_memory=False):
     epc_certs : pandas.DateFrame
         EPC certificate data for given area and features."""
 
-    # Load sample data
-    sample_file_path = epc_data_path + "/domestic-W06000015-Cardiff/certificates.csv"
-    sample_df = pd.read_csv(sample_file_path)
-
     # Get all directories
     all_directories = os.listdir(epc_data_path)
 
