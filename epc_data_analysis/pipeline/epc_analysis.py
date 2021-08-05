@@ -51,9 +51,10 @@ def get_emissions_info(df, feature_1, feature_2):
     total = total_emissions = df[feature_1].sum()
 
     # Get absolute, relative and mean emissions
-    emissions_rel = df.groupby(feature_2)[feature_1].sum() / total * 100
-    emissions_abs = df.groupby(feature_2)[feature_1].sum()
-    emissions_mean = df.groupby(feature_2)[feature_1].mean()
+    emissions = df.groupby(feature_2)[feature_1]
+    emissions_rel = emissions.sum() / total * 100
+    emissions_abs = emissions.sum()
+    emissions_mean = emissions.mean()
     emissions_by_dwelling = emissions_abs / df[feature_2].value_counts()
 
     # Set up emissions dictionary
