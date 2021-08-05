@@ -8,7 +8,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.11.2
+#       jupytext_version: 1.11.4
 #   kernelspec:
 #     display_name: epc_data_analysis
 #     language: python
@@ -30,17 +30,17 @@ import pandas as pd
 import numpy as np
 from keplergl import KeplerGl
 
+from epc_data_analysis import get_yaml_config, Path, PROJECT_DIR
 from epc_data_analysis.getters import epc_data, util_data
 from epc_data_analysis.pipeline import feature_engineering
+from epc_data_analysis.analysis.notebooks.notebook_utils import Kepler_configs
 
 # %% [markdown]
 # ### Load Config File
 
 # %%
-with open("Kepler/tenure_type_correct_colors_IMD_config.txt", "r") as infile:
-    config = infile.read()
-    config = yaml.load(config, Loader=yaml.FullLoader)
-
+# Load config file
+config = Kepler_configs.get_Kepler_config()
 
 # %% [markdown]
 # ### Load EPC data
@@ -123,14 +123,19 @@ tenure_type_map
 # ### Save Map and Config File
 
 # %%
-tag = "_x"
+tag = "_new"
 
 tenure_type_map.save_to_html(
-    file_name="../../../outputs/data/Wales/Kepler/Wales_EPC_IMD.html"
+    file_name=Kepler_configs.KEPLER_OUTPUT_PATH + "Wales_EPC_IMD.html"
 )
-with open(
-    "Kepler/tenure_type_correct_colors_IMD_config{}.txt".format(tag), "w"
-) as outfile:
+
+new_config_file = (
+    Kepler_configs.KEPLER_CONFIG_FILE_PATH
+    + "/tenure_type_correct_colors_IMD_config{}.txt".format(tag)
+)
+with open(new_config_file, "w") as outfile:
     outfile.write(str(tenure_type_map.config))
+
+# %%
 
 # %%
