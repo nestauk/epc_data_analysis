@@ -9,7 +9,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.11.2
+#       jupytext_version: 1.11.4
 #   kernelspec:
 #     display_name: epc_data_analysis
 #     language: python
@@ -79,7 +79,12 @@ from ipywidgets import interact
 import re
 
 from epc_data_analysis.getters import epc_data, util_data
-from epc_data_analysis.pipeline import feature_engineering, easy_plotting, epc_analysis
+from epc_data_analysis.pipeline import (
+    feature_engineering,
+    easy_plotting,
+    epc_analysis,
+    data_cleaning,
+)
 from epc_data_analysis.analysis.notebooks.notebook_utils import my_widgets
 
 # %% [markdown]
@@ -112,7 +117,7 @@ UK_part = my_widgets.UK_part_widget.value
 features_of_interest = list(my_widgets.feature_widget.value)
 
 # Load Wales EPC data
-epc_df = epc_data.load_EPC_data(
+epc_df = epc_data.load_epc_data(
     subset=UK_part, usecols=features_of_interest, low_memory=False
 )
 epc_df.head()
@@ -130,8 +135,12 @@ epc_df.head()
 # Load Wales IMD data
 wimd_df = util_data.get_WIMD_data()
 
+# Reformat POSTCODE
+epc_df = data_cleaning.reformat_postcode(epc_df)
+wimd_df = data_cleaning.reformat_postcode(wimd_df)
+
 # Merge datasets
-epc_wimd_df = util_data.merge_dataframes(epc_df, wimd_df, "POSTCODE")
+epc_wimd_df = pd.merge(epc_df, wimd_df, on=["POSTCODE"])
 epc_wimd_df.head()
 
 # %% [markdown]

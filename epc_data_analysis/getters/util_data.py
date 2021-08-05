@@ -58,34 +58,3 @@ def get_WIMD_data():
     # Load data
     wimd_df = pd.read_csv(WIMD_PATH)
     return wimd_df
-
-
-def merge_dataframes(df1, df2, merge_feature):
-    """Merge dataframes based on given feature/column.
-
-    Parameters
-    ----------
-    df1 : pandas.Dataframe
-        First dataframe to be merged with second dataframe.
-
-    df2 : pandas.Dataframe
-        Second dataframe to be merged with first dataframe.
-
-    merge_feature : str
-        Feature/column used to merge two dataframes.
-
-    Return
-    ---------
-    merged_df : pandas.DateFrame
-        Merged new dataframe."""
-
-    # Fix postcode format before merging
-    if merge_feature == "POSTCODE":
-
-        df1["POSTCODE"] = df1["POSTCODE"].str.replace(r" ", "")
-        df2["POSTCODE"] = df2["POSTCODE"].str.replace(r" ", "")
-
-    # Merge datasets
-    merged_df = pd.merge(df1, df2, on=[merge_feature])
-
-    return merged_df
