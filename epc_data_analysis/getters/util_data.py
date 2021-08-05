@@ -9,8 +9,8 @@ data_config = get_yaml_config(
 )
 
 # Get paths
-location_path = str(PROJECT_DIR) + data_config["POSTCODE_PATH"]
-WIMD_path = str(PROJECT_DIR) + data_config["WIMD_PATH"]
+LOCATION_PATH = str(PROJECT_DIR) + data_config["POSTCODE_PATH"]
+WIMD_PATH = str(PROJECT_DIR) + data_config["WIMD_PATH"]
 
 
 def get_location_data():
@@ -27,7 +27,7 @@ def get_location_data():
     """
 
     # Load data
-    location_data_df = pd.read_csv(location_path)
+    location_data_df = pd.read_csv(LOCATION_PATH)
 
     # Remove ID (not necessary and conflicts with EPC dataframe)
     del location_data_df["id"]
@@ -56,7 +56,7 @@ def get_WIMD_data():
         Wales Index of Multiple Deprivation data."""
 
     # Load data
-    wimd_df = pd.read_csv(WIMD_path)
+    wimd_df = pd.read_csv(WIMD_PATH)
     return wimd_df
 
 
