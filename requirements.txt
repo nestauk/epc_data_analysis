@@ -3,6 +3,7 @@ numpy==1.19.2
 keplergl==0.2.2
 ipywidgets==7.5.1
 matplotlib==3.3.2
+scipy==1.5.0
 ipython==7.25.0
 python-dotenv==0.18.0
 PyYAML==5.4.1
