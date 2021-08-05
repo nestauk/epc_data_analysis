@@ -220,7 +220,7 @@ def plot_subcategory_distribution(
     ax.set_yticklabels(yticklabels)
 
     # Adjust ylim in case of ylabel adjustment for easier readiablity (50000 --> 50k)
-    highest_count = max([cty for cty in category_counts.values])
+    highest_count = max(category_counts)
 
     for i, cty in enumerate(category_counts.values):
         ax.text(
