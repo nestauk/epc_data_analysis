@@ -33,7 +33,7 @@ epc_data_config = get_yaml_config(
 FIG_PATH = str(PROJECT_DIR) + epc_data_config["FIGURE_PATH"]
 
 
-def save_figure(plt, save_filename, plot_title=None, file_extension=".png", dpi=500):
+def save_figure(plt, plot_title=None, file_extension=".png", dpi=500):
     """Create filename and save figure.
 
     Parameters
@@ -41,11 +41,6 @@ def save_figure(plt, save_filename, plot_title=None, file_extension=".png", dpi=
 
     plt : matplotlib.pyplot
         Plot to save.
-
-    save_filename : str, None
-        Save plot under this filename, automatically add ".png"
-        If None, do not save.
-        If "" or "auto", automatically generate filename.
 
     plot_title: str, None, default=None
         Use plot title to generate filename.
@@ -65,21 +60,17 @@ def save_figure(plt, save_filename, plot_title=None, file_extension=".png", dpi=
     # Tight layout
     plt.tight_layout()
 
-    # Only save plot if required
-    if save_filename is not None:
-        if save_filename == "" or save_filename == "auto":
+    # Automatically generate filename
+    if plot_title is not None:
+        save_filename = plot_title
+        save_filename = re.sub(" ", "_", save_filename)
 
-            # Automatically generate filename
-            if plot_title is not None:
-                save_filename = plot_title
-                save_filename = re.sub(" ", "_", save_filename)
+    # Use "figure" as filename as default
+    else:
+        save_filename = "figure"
 
-            # Use "figure" as filename
-            else:
-                save_filename = "figure"
-
-        # Save fig
-        plt.savefig(FIG_PATH + save_filename + file_extension, dpi=dpi)
+    # Save fig
+    plt.savefig(FIG_PATH + save_filename + file_extension, dpi=dpi)
 
 
 def get_readable_tick_labels(plt, ticklabel_type, axis):
@@ -159,7 +150,6 @@ def plot_subcategory_distribution(
     normalize=False,
     color="lightseagreen",
     plot_title=None,
-    save_filename="",
     y_label="",
     x_label="",
     y_ticklabel_type=None,
@@ -180,11 +170,6 @@ def plot_subcategory_distribution(
 
     color : str
         Color of bars in plot.
-
-    save_filename : str, None, default=''
-        Save plot under this filename, automatically add ".png"
-        If None, do not save.
-        If "" or "auto", automatically generate filename.
 
     y_label : str, default=""
         Label for y-axis.
@@ -248,7 +233,7 @@ def plot_subcategory_distribution(
     ax.set_ylim([0.0, int(highest_count + highest_count / 8)])
 
     # Save figure
-    save_figure(plt, save_filename, plot_title)
+    save_figure(plt, plot_title)
 
     # Show plot
     plt.show()
@@ -262,7 +247,6 @@ def plot_feature_by_subcategories(
     plot_title=None,
     y_label="",
     x_label="",
-    save_filename="",
     plot_kind="hist",
 ):
     """Plot a feature/column by another feature/column's subcategories.
@@ -287,17 +271,14 @@ def plot_feature_by_subcategories(
 
     plot_title : str = None
         Title to display above plot.
+        If None, title is created automatically.
+        Plot title is also used when saving file.
 
     y_label : str, default=""
         Label for y-axis.
 
     x_label : str, default=""
         Label for x-axis
-
-    save_filename : str, None, default=""
-        Filename under which to save plot.
-        If None, plot is not saved.
-        If "" or "auto", filename is generated automatically.
 
     plot_kind : {"hist", "bar"}, default="hist"
         Type of plot."""
@@ -332,7 +313,7 @@ def plot_feature_by_subcategories(
     plt.xlabel(x_label)
 
     # Save figure
-    save_figure(plt, save_filename, plot_title)
+    save_figure(plt, plot_title)
 
     # Show plot
     plt.show()
@@ -347,7 +328,6 @@ def plot_subcats_by_other_subcats(
     plot_title=None,
     y_label="",
     x_label="",
-    save_filename="",
     plot_kind="bar",
     plotting_colors=None,
     y_ticklabel_type=None,
@@ -376,19 +356,16 @@ def plot_subcats_by_other_subcats(
     feature_2_subcat_order : list, None, default=None
         The order in which feature 2 subcategories are displayed.
 
-    plot_title : str, None, default=None
+    plot_title : str = None
         Title to display above plot.
+        If None, title is created automatically.
+        Plot title is also used when saving file.
 
     y_label : str, default=""
         Label for y-axis.
 
     x_label : str, default=""
         Label for x-axis
-
-    save_filename : str, None, default=""
-        Filename under which to save plot.
-        If None, plot is not saved.
-        If "" or "auto", filename is generated automatically.
 
     plot_kind : {"hist", "bar"}, default="hist"
         Type of plot.
@@ -464,7 +441,7 @@ def plot_subcats_by_other_subcats(
     plt.xticks(rotation=0)
 
     # Save figure
-    save_figure(plt, save_filename, plot_title)
+    save_figure(plt, plot_title)
 
     # Show plot
     plt.show()
@@ -507,7 +484,6 @@ def plot_correlation(
     plot_title=None,
     y_label="",
     x_label="",
-    save_filename="",
 ):
     """
     Parameters
@@ -528,19 +504,16 @@ def plot_correlation(
     ylim_max : int, default=100
         Limit for y-axis for better readbility
 
-    plot_title : str, None, default=None
+    plot_title : str = None
         Title to display above plot.
+        If None, title is created automatically.
+        Plot title is also used when saving file.
 
     y_label : str, default=""
         Label for y-axis.
 
     x_label : str, default=""
-        Label for x-axis
-
-    save_filename : str, None, default=""
-        Filename under which to save plot.
-        If None, plot is not saved.
-        If "" or "auto", filename is generated automatically."""
+        Label for x-axis"""
 
     # Set plot title
     tag = " with hist subplots" if with_hist_subplots else ""
@@ -600,7 +573,7 @@ def plot_correlation(
         plt.ylabel(feature_2)  # or y_label
 
     # Save figure
-    save_figure(plt, save_filename, plot_title)
+    save_figure(plt, plot_title)
 
     # Show plot
     plt.show()
