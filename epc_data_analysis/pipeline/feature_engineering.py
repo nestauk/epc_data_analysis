@@ -128,10 +128,19 @@ def get_heating_features(df, fine_grained_HP_types=False):
         source_type = "unknown"
 
         # If heating value exists
-        if not pd.isnull(heating):
+        if not (pd.isnull(heating) and isinstance(heating, float)):
 
             # Lowercase
             heating = heating.lower()
+
+            other_heating_system = [
+                ("boiler and radiator" in heating),
+                ("boiler & radiator" in heating),
+                ("boiler and underfloor" in heating),
+                ("boiler & underfloor" in heating),
+                ("community scheme" in heating),
+                ("heater" in heating),  # not specified heater
+            ]
 
             # Different heat pump types
             # --------------------------
@@ -173,14 +182,7 @@ def get_heating_features(df, fine_grained_HP_types=False):
             # Boiler and radiator / Boiler and underfloor / Community scheme / Heater (unspecified)
             # --------------------------
 
-            elif (
-                ("boiler and radiator" in heating)
-                or ("boiler & radiator" in heating)
-                or ("boiler and underfloor" in heating)
-                or ("boiler & underfloor" in heating)
-                or ("community scheme" in heating)
-                or ("heater" in heating)  # not specified heater
-            ):
+            elif any(other_heating_system):
 
                 # Set heating system dict
                 heating_system_dict = {
