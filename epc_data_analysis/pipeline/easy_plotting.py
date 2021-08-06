@@ -171,6 +171,11 @@ def plot_subcategory_distribution(
     color : str
         Color of bars in plot.
 
+    plot_title : str, None, default=None
+        Title to display above plot.
+        If None, title is created automatically.
+        Plot title is also used when saving file.
+
     y_label : str, default=""
         Label for y-axis.
 
@@ -269,7 +274,7 @@ def plot_feature_by_subcategories(
     subcategory : str, default=None
         Only plot subcategories/values of given subcategory.
 
-    plot_title : str = None
+    plot_title : str, None, default=None
         Title to display above plot.
         If None, title is created automatically.
         Plot title is also used when saving file.
@@ -347,7 +352,7 @@ def plot_subcats_by_other_subcats(
 
     feature_2 : str
         Feature for which distribution is shown split per subcategory
-        of feature 1. Feature 2 sbcategories are represented with differnet colors,
+        of feature 1. Feature 2 subcategories are represented with differnet colors,
         explained with a color legend.
 
     feature_1_subcat_order : list, None, default=None
@@ -356,7 +361,7 @@ def plot_subcats_by_other_subcats(
     feature_2_subcat_order : list, None, default=None
         The order in which feature 2 subcategories are displayed.
 
-    plot_title : str = None
+    plot_title : str, None, default=None
         Title to display above plot.
         If None, title is created automatically.
         Plot title is also used when saving file.
@@ -476,7 +481,7 @@ def plot_correlation(
     ylim_max : int, default=100
         Limit for y-axis for better readbility
 
-    plot_title : str = None
+    plot_title : str, None, default=None
         Title to display above plot.
         If None, title is created automatically.
         Plot title is also used when saving file.
