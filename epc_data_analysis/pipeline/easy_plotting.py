@@ -10,7 +10,6 @@ Last updated on 13/07/2021
 
 # Imports
 import pandas as pd
-from scipy.stats import pearsonr
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
@@ -446,34 +445,6 @@ def plot_subcats_by_other_subcats(
 
     # Show plot
     plt.show()
-
-
-def get_pearson_correlation(df, feature_1, feature_2):
-    """Compute Pearson correlation for two features.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        Dataframe which holds features for which to compute correlation.
-
-    feature_1 : str
-        First feature.
-
-    feature_2 : str
-        Second feature.
-
-    Return
-    ----------
-        None"""
-
-    # Get values for feature 1 and feature 2
-    values_1 = df[feature_1]
-    values_2 = df[feature_2]
-
-    # Compute correlation between features (discard p_value)
-    correlation, _ = pearsonr(values_1, values_2)
-
-    return round(correlation, 3)
 
 
 def plot_correlation(

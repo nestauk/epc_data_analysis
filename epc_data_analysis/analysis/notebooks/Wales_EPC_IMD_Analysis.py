@@ -74,6 +74,7 @@
 
 # %%
 import pandas as pd
+from scipy.stats import pearsonr
 import matplotlib.pyplot as plt
 from ipywidgets import interact
 import re
@@ -362,10 +363,8 @@ def check_for_correlation(
     )
 
     # Compute Pearson correlation between feature 1 and feature 2
-    pearson_correlation = easy_plotting.get_pearson_correlation(
-        df, feature_1, feature_2
-    )
-    print("Pearson Correlation:", round(pearson_correlation, 3))
+    corr, _ = pearsonr(df[feature_1], df[feature_2])
+    print("Pearson Correlation:", round(corr, 3))
 
 
 # %% [markdown]
