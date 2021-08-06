@@ -153,6 +153,7 @@ def plot_subcategory_distribution(
     y_label="",
     x_label="",
     y_ticklabel_type=None,
+    x_tick_rotation=0,
 ):
     """Plot distribution of subcategories/values of specific category/feature.
 
@@ -186,6 +187,10 @@ def plot_subcategory_distribution(
         Label for yticklabel, e.g. 'k' when displaying numbers
         in more compact way for easier readability (50000 --> 50k).
 
+    x_tick_rotation : int, default=0
+        Rotation of x-tick labels.
+        If rotation set to 45, make end of label align with tick (ha="right").
+
     Return
     ---------
     None"""
@@ -213,8 +218,12 @@ def plot_subcategory_distribution(
     # Add titles and labels
     plt.title(plot_title)
     plt.xlabel(x_label)
-    plt.xticks(rotation=0)
     plt.ylabel(y_label)
+    plt.xticks(
+        rotation=x_tick_rotation, ha="right"
+    ) if x_tick_rotation == 45 else plt.xticks(rotation=x_tick_rotation)
+
+    plt.xticks(rotation=0)
 
     # Get new yticklabels
     ax = plt.gca()
@@ -253,40 +262,45 @@ def plot_feature_by_subcategories(
     y_label="",
     x_label="",
     plot_kind="hist",
+    x_tick_rotation=0,
 ):
     """Plot a feature/column by another feature/column's subcategories.
-    For example, plot the energy efficiency (feature of interest) on y-axis
-    by different tenure types (category) or specific tenure type (subcategory) on x-axis.
+     For example, plot the energy efficiency (feature of interest) on y-axis
+     by different tenure types (category) or specific tenure type (subcategory) on x-axis.
 
-    Parameters
-    ----------
+     Parameters
+     ----------
 
-    df : pd.DataFrame
-        Dataframe to analyse and plot.
+     df : pd.DataFrame
+         Dataframe to analyse and plot.
 
-    feature_of_interest : str
-        Feature to plot on y-axis.
+     feature_of_interest : str
+         Feature to plot on y-axis.
 
-    category : str
-        Category to plot on x-axis.
-        Show all subcategories/values.
+     category : str
+         Category to plot on x-axis.
+         Show all subcategories/values.
 
-    subcategory : str, default=None
-        Only plot subcategories/values of given subcategory.
+     subcategory : str, default=None
+         Only plot subcategories/values of given subcategory.
 
-    plot_title : str, None, default=None
-        Title to display above plot.
-        If None, title is created automatically.
-        Plot title is also used when saving file.
+     plot_title : str, None, default=None
+         Title to display above plot.
+         If None, title is created automatically.
+         Plot title is also used when saving file.
 
-    y_label : str, default=""
-        Label for y-axis.
+     y_label : str, default=""
+         Label for y-axis.
 
-    x_label : str, default=""
-        Label for x-axis
+     x_label : str, default=""
+         Label for x-axis
 
-    plot_kind : {"hist", "bar"}, default="hist"
-        Type of plot."""
+     plot_kind : {"hist", "bar"}, default="hist"
+         Type of plot.
+
+    x_tick_rotation : int, default=0
+         Rotation of x-tick labels.
+         If rotation set to 45, make end of label align with tick (ha="right")."""
 
     # Tag for title
     tag = ""
@@ -313,9 +327,11 @@ def plot_feature_by_subcategories(
 
     # Describe plot with title and labels
     plt.title(plot_title)
-    plt.xticks(rotation=0)
     plt.ylabel(y_label)
     plt.xlabel(x_label)
+    plt.xticks(
+        rotation=x_tick_rotation, ha="right"
+    ) if x_tick_rotation == 45 else plt.xticks(rotation=x_tick_rotation)
 
     # Save figure
     save_figure(plt, plot_title)
@@ -336,54 +352,59 @@ def plot_subcats_by_other_subcats(
     plot_kind="bar",
     plotting_colors=None,
     y_ticklabel_type=None,
+    x_tick_rotation=0,
 ):
     """Plot subcategories of given feature by subcategories of another feature.
-    For example, plot and color-code the distribution of heating types (feature 2)
-    on the different tenure types (feature 1).
+     For example, plot and color-code the distribution of heating types (feature 2)
+     on the different tenure types (feature 1).
 
-    Parameters
-    ----------
+     Parameters
+     ----------
 
-    df : pd.DataFrame
-        Dataframe to analyse and plot.
+     df : pd.DataFrame
+         Dataframe to analyse and plot.
 
-    feature_1 : str
-        Feature for which subcategories are plotted on x-axis.
+     feature_1 : str
+         Feature for which subcategories are plotted on x-axis.
 
-    feature_2 : str
-        Feature for which distribution is shown split per subcategory
-        of feature 1. Feature 2 subcategories are represented with differnet colors,
-        explained with a color legend.
+     feature_2 : str
+         Feature for which distribution is shown split per subcategory
+         of feature 1. Feature 2 subcategories are represented with differnet colors,
+         explained with a color legend.
 
-    feature_1_subcat_order : list, None, default=None
-        The order in which feature 1 subcategories are displayed.
+     feature_1_subcat_order : list, None, default=None
+         The order in which feature 1 subcategories are displayed.
 
-    feature_2_subcat_order : list, None, default=None
-        The order in which feature 2 subcategories are displayed.
+     feature_2_subcat_order : list, None, default=None
+         The order in which feature 2 subcategories are displayed.
 
-    plot_title : str, None, default=None
-        Title to display above plot.
-        If None, title is created automatically.
-        Plot title is also used when saving file.
+     plot_title : str, None, default=None
+         Title to display above plot.
+         If None, title is created automatically.
+         Plot title is also used when saving file.
 
-    y_label : str, default=""
-        Label for y-axis.
+     y_label : str, default=""
+         Label for y-axis.
 
-    x_label : str, default=""
-        Label for x-axis
+     x_label : str, default=""
+         Label for x-axis
 
-    plot_kind : {"hist", "bar"}, default="hist"
-        Type of plot.
+     plot_kind : {"hist", "bar"}, default="hist"
+         Type of plot.
 
-    plotting_colors : list, str, None, default=None
-        Ordered list of colors or color map to use when plotting feature 2.
-        If list, use list of colors.
-        If str, use corresponding matplotlib color map.
-        If None, use default color list.
+     plotting_colors : list, str, None, default=None
+         Ordered list of colors or color map to use when plotting feature 2.
+         If list, use list of colors.
+         If str, use corresponding matplotlib color map.
+         If None, use default color list.
 
-    y_ticklabel_type : {'', 'm', 'k' or '%'}, default=None
-        Label for yticklabel, e.g. 'k' when displaying numbers
-        in more compact way for easier readability (50000 --> 50k)."""
+     y_ticklabel_type : {'', 'm', 'k' or '%'}, default=None
+         Label for yticklabel, e.g. 'k' when displaying numbers
+         in more compact way for easier readability (50000 --> 50k).
+
+    x_tick_rotation : int, default=0
+         Rotation of x-tick labels.
+         If rotation set to 45, make end of label align with tick (ha="right")."""
 
     # Remove all samples for which feature 1 or feature 2 is NaN.
     df = df[df[feature_1].notna()]
@@ -443,7 +464,9 @@ def plot_subcats_by_other_subcats(
     plt.title(plot_title)
     plt.ylabel(y_label)
     plt.xlabel(x_label)
-    plt.xticks(rotation=0)
+    plt.xticks(
+        rotation=x_tick_rotation, ha="right"
+    ) if x_tick_rotation == 45 else plt.xticks(rotation=x_tick_rotation)
 
     # Save figure
     save_figure(plt, plot_title)
@@ -461,36 +484,41 @@ def plot_correlation(
     plot_title=None,
     y_label="",
     x_label="",
+    x_tick_rotation=0,
 ):
     """
-    Parameters
-    ----------
-    df : pandas.DataFrame
-     Dataframe which holds features for which to plot correlation.
+     Parameters
+     ----------
+     df : pandas.DataFrame
+      Dataframe which holds features for which to plot correlation.
 
-    feature_1 : str
-        Feature to plot on x-axis.
+     feature_1 : str
+         Feature to plot on x-axis.
 
-    feature_2 : str
-        Feature to plot on y-axis.
+     feature_2 : str
+         Feature to plot on y-axis.
 
-    with_hist_subplots: bool, default=True
-        Plot histogram subplots above and besides correlation plot
-        for both features.
+     with_hist_subplots: bool, default=True
+         Plot histogram subplots above and besides correlation plot
+         for both features.
 
-    ylim_max : int, default=100
-        Limit for y-axis for better readbility
+     ylim_max : int, default=100
+         Limit for y-axis for better readbility
 
-    plot_title : str, None, default=None
-        Title to display above plot.
-        If None, title is created automatically.
-        Plot title is also used when saving file.
+     plot_title : str, None, default=None
+         Title to display above plot.
+         If None, title is created automatically.
+         Plot title is also used when saving file.
 
-    y_label : str, default=""
-        Label for y-axis.
+     y_label : str, default=""
+         Label for y-axis.
 
-    x_label : str, default=""
-        Label for x-axis"""
+     x_label : str, default=""
+         Label for x-axis.
+
+    x_tick_rotation : int, default=0
+         Rotation of x-tick labels.
+         If rotation set to 45, make end of label align with tick (ha="right")."""
 
     # Set plot title
     tag = " with hist subplots" if with_hist_subplots else ""
@@ -514,6 +542,9 @@ def plot_correlation(
         plt.title(plot_title)
         plt.xlabel(feature_1)
         plt.ylabel(feature_2)
+        plt.xticks(
+            rotation=x_tick_rotation, ha="right"
+        ) if x_tick_rotation == 45 else plt.xticks(rotation=x_tick_rotation)
 
         # Set Histogram subplot for feature 1
         ax_hist_x = fig.add_subplot(gs[0, 0:3], title=feature_1 + " Histogram")
@@ -548,6 +579,9 @@ def plot_correlation(
         # Set labels
         plt.xlabel(feature_1)  # or x_label
         plt.ylabel(feature_2)  # or y_label
+        plt.xticks(
+            rotation=x_tick_rotation, ha="right"
+        ) if x_tick_rotation == 45 else plt.xticks(rotation=x_tick_rotation)
 
     # Save figure
     save_figure(plt, plot_title)
