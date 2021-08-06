@@ -10,6 +10,7 @@ Last updated on 13/07/2021
 
 # Import
 import pandas as pd
+import re
 
 # ---------------------------------------------------------------------------------
 
@@ -226,4 +227,157 @@ def get_heating_features(df, fine_grained_HP_types=False):
     df["HEATING_SYSTEM"] = heating_system_types
     df["HEATING_SOURCE"] = heating_source_types
 
+    return df
+
+
+def get_year(date):
+    """Year for given date.
+
+    Parameters
+    ----------
+    date : str
+        Given date in format year-month-day.
+
+    Return
+    ---------
+    year : int
+        Year derived from date."""
+
+    year = date.split("-")[0]
+    return int(year)
+
+
+def get_date_as_int(date):
+    """Transform date into integer to compute earliest/latest date.
+
+    Parameters
+    ----------
+    date : str
+        Given date in format year-month-day or yearmonthday.
+
+    Return
+    ---------
+    date : int
+        Date as integer."""
+
+    # Remove delimiters
+    date = re.sub("-", "", date)
+    date = re.sub("/", "", date)
+
+    return int(date)
+
+
+def get_date_features(df):
+    """Get year of inspection and date as integer as features.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Dataframe to which new features are added.
+
+    Return
+    ---------
+    df : pandas.DataFrame
+        Dataframe with new features."""
+
+    df["YEAR"] = df["INSPECTION_DATE"].apply(get_year)
+    df["DATE_INT"] = df["INSPECTION_DATE"].apply(get_date_as_int)
+
+    return df
+
+
+def filter_by_year(df, year, up_to=True, selection=None):
+    """Filter EPC dataset by year of inspection/entry.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Dataframe to which new features are added.
+
+    year : int, None, "all"
+        Year by which to filter data.
+        If None or "all", use all data.
+
+    up_to : bool, default=True
+        If True, get all samples up to given year.
+        If False, only get sample from given year.
+
+    selection : {"first entry", "latest entry"} or None, default=None
+        For duplicates, get only first or latest entry.
+        If None, do not remove any duplicates.
+
+    Return
+    ---------
+    df : pandas.DataFrame
+        Dataframe with new features."""
+
+    # If year is given for filtering
+    if year != "all" and year is not None:
+
+        if up_to:
+            df = df.loc[df["YEAR"] <= year]
+        else:
+            df = df.loc[df["YEAR"] == year]
+
+    # Filter by selection
+    selection_dict = {"first entry": "first", "latest entry": "last"}
+
+    if selection in ["first entry", "latest entry"]:
+        df = (
+            df.sort_values("DATE_INT", ascending=True)
+            .drop_duplicates(
+                subset=["BUILDING_REFERENCE_NUMBER"], keep=selection_dict[selection]
+            )
+            .sort_index()
+        )
+
+    elif selection is None:
+        df = df
+
+    else:
+        raise IOError("{} not implemented.".format(selection))
+
+    return df
+
+
+def count_number_of_entries(row, ref_counts):
+    """Count the number entries for given building based on
+    building reference number.
+
+    row : pandas.Series
+        EPC dataset row.
+
+    ref_counts : pandas.Series
+        Value counts for building reference number.
+
+    Return
+    ---------
+    counts : int
+        How many entries are there for given building."""
+
+    building_ref = row["BUILDING_REFERENCE_NUMBER"]
+    try:
+        counts = ref_counts[building_ref]
+    except KeyError:
+        return building_ref
+
+    return counts
+
+
+def get_build_entry_feature(df):
+    """Get feature that shows number of entries for any given building.
+
+    df : pandas.DataFrame
+        EPC dataframe.
+
+    Return
+    ---------
+    df : pandas.DataFrame
+        EPC dataframe with # entry feature."""
+
+    ref_counts = df["BUILDING_REFERENCE_NUMBER"].value_counts()
+
+    df["N_ENTRIES"] = df.apply(
+        lambda row: count_number_of_entries(row, ref_counts), axis=1
+    )
     return df
