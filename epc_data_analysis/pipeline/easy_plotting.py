@@ -379,6 +379,10 @@ def plot_subcats_by_other_subcats(
      feature_2_subcat_order : list, None, default=None
          The order in which feature 2 subcategories are displayed.
 
+    normalise : bool, default=True
+        If True, relative numbers (percentage) instead of absolute numbers.
+
+
      plot_title : str, None, default=None
          Title to display above plot.
          If None, title is created automatically.
