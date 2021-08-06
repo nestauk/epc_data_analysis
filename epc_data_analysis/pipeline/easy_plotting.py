@@ -346,6 +346,7 @@ def plot_subcats_by_other_subcats(
     feature_2,
     feature_1_order=None,
     feature_2_order=None,
+    normalise=True,
     plot_title=None,
     y_label="",
     x_label="",
@@ -421,12 +422,19 @@ def plot_subcats_by_other_subcats(
     # Create a feature-bar dict
     feat_bar_dict = {}
 
+    # Get totals for noramlisation
+    totals = df[feature_1].value_counts()
+
     # For every feature 2 value/subcategory, get feature 1 values
     # e.g. for every tenure type, get windows energy efficiencies
     for feat2 in feature_2_values:
         dataset_of_interest = df.loc[df[feature_2] == feat2][feature_1]
         data_of_interest = dataset_of_interest.value_counts()
-        feat_bar_dict[feat2] = data_of_interest
+
+        if normalise:
+            feat_bar_dict[feat2] = data_of_interest / totals * 100
+        else:
+            feat_bar_dict[feat2] = data_of_interest
 
     # Save feature 2 subcategories by feature 1 subcategories as dataframe
     subcat_by_subcat = pd.DataFrame(feat_bar_dict, index=feature_1_values)
