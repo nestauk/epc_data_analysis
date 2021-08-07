@@ -140,6 +140,11 @@ EPC_columns_selection = [
     "HEATING_COST_POTENTIAL",
     "HOT_WATER_COST_CURRENT",
     "HOT_WATER_COST_POTENTIAL",
+    "BUILDING_REFERENCE_NUMBER",
+    "LODGEMENT_DATE",
+    "INSPECTION_DATE",
+    "BUILT_FORM",
+    "PROPERTY_TYPE",
 ]
 
 # ---------------------------------------------------------------------------------
@@ -181,8 +186,8 @@ feature_widget = widgets.SelectMultiple(
 
 # Widget for UK part
 UK_part_widget = widgets.Dropdown(
-    options=["Wales", "England", "all"],
-    value="Wales",
+    options=["Wales", "England", "Scotland", "all"],
+    value="all",
     description="Part of UK",
     # layout=box_layout,
 )
