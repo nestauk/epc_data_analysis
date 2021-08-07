@@ -1,10 +1,11 @@
 EPC_DATASET_PATH: "/inputs/EPC_data/all-domestic-certificates/"
-EPC_TOY_PATH: "/inputs/EPC_data/all-domestic-certificates/domestic-W06000015-Cardiff/certificates.csv"
+EPC_DATASET_SCOTLAND_PATH: "/inputs/EPC_data/EPC_data_Scotland/"
 
 POSTCODE_PATH: "/inputs/ukpostcodes.csv"
 WIMD_PATH: "/inputs/wimd_df.csv"
 
-FIGURE_PATH: "/outputs/data/Wales/Figures/"
+#FIGURE_PATH: "/outputs/data/Wales/Figures/"
+FIGURE_PATH: "/outputs/data/Comparison/Figures/"
 
 KEPLER_CONFIG_PATH: "/epc_data_analysis/analysis/notebooks/Kepler/"
 KEPLER_CONFIG_FILE: "/epc_data_analysis/analysis/notebooks/Kepler/tenure_type_correct_colors_IMD_config.txt"
