@@ -107,7 +107,9 @@ Recycling/
 /inputs/*
 !/inputs/*.md
 /outputs/data/Wales/Figures/*
+/outputs/data/Comparison/Figures/*
 !/outputs/data/Wales/Figures/.gitkeep
+!/outputs/data/Comparison/Figures/.gitkeep
 /outputs/data/Wales/Kepler/*
 !/outputs/data/Wales/Kepler/.gitkeep
 !/outputs/data/*.md
