@@ -145,6 +145,7 @@ EPC_columns_selection = [
     "INSPECTION_DATE",
     "BUILT_FORM",
     "PROPERTY_TYPE",
+    "CONSTRUCTION_AGE_BAND",
 ]
 
 # ---------------------------------------------------------------------------------
