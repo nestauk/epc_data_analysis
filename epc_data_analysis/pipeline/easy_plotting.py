@@ -67,7 +67,7 @@ def save_figure(plt, plot_title=None, file_extension=".png", dpi=500):
 
     # Use "figure" as filename as default
     else:
-        save_filename = "figure"
+        save_filename = "figure.png"
 
     # Save fig
     plt.savefig(FIG_PATH + save_filename + file_extension, dpi=dpi)
@@ -166,7 +166,7 @@ def plot_subcategory_distribution(
     category : str
         Category/column of interest for which distribution is plotted.
 
-    normalise : bool, default=False
+    normalize : bool, default=False
         If True, relative numbers (percentage) instead of absolute numbers.
 
     color : str
@@ -222,8 +222,6 @@ def plot_subcategory_distribution(
     plt.xticks(
         rotation=x_tick_rotation, ha="right"
     ) if x_tick_rotation == 45 else plt.xticks(rotation=x_tick_rotation)
-
-    plt.xticks(rotation=0)
 
     # Get new yticklabels
     ax = plt.gca()
@@ -346,7 +344,7 @@ def plot_subcats_by_other_subcats(
     feature_2,
     feature_1_order=None,
     feature_2_order=None,
-    normalise=True,
+    normalize=True,
     plot_title=None,
     y_label="",
     x_label="",
@@ -354,6 +352,8 @@ def plot_subcats_by_other_subcats(
     plotting_colors=None,
     y_ticklabel_type=None,
     x_tick_rotation=0,
+    legend_loc="inside",
+    figsize=None,
 ):
     """Plot subcategories of given feature by subcategories of another feature.
      For example, plot and color-code the distribution of heating types (feature 2)
@@ -379,7 +379,7 @@ def plot_subcats_by_other_subcats(
      feature_2_subcat_order : list, None, default=None
          The order in which feature 2 subcategories are displayed.
 
-    normalise : bool, default=True
+    normalize : bool, default=True
         If True, relative numbers (percentage) instead of absolute numbers.
 
 
@@ -435,7 +435,7 @@ def plot_subcats_by_other_subcats(
         dataset_of_interest = df.loc[df[feature_2] == feat2][feature_1]
         data_of_interest = dataset_of_interest.value_counts()
 
-        if normalise:
+        if normalize:
             feat_bar_dict[feat2] = data_of_interest / totals * 100
         else:
             feat_bar_dict[feat2] = data_of_interest
@@ -463,6 +463,11 @@ def plot_subcats_by_other_subcats(
     else:
         raise IOError("Invalid plotting_colors '{}'.".format(plotting_colors))
 
+    # Adjust figsize
+    if figsize is not None:
+        fig = plt.gcf()
+        fig.set_size_inches(figsize[0], figsize[1])
+
     # Get updated yticklabels
     ax = plt.gca()
     yticklabels, ax, _, _ = get_readable_tick_labels(plt, y_ticklabel_type, "y")
@@ -479,6 +484,9 @@ def plot_subcats_by_other_subcats(
     plt.xticks(
         rotation=x_tick_rotation, ha="right"
     ) if x_tick_rotation == 45 else plt.xticks(rotation=x_tick_rotation)
+
+    if legend_loc == "outside":
+        plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
 
     # Save figure
     save_figure(plt, plot_title)
