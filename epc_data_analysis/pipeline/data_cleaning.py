@@ -192,6 +192,8 @@ def standardise_efficiency(efficiency):
     efficiency = efficiency.lower().strip()
     efficiency = efficiency.strip('"')
     efficiency = efficiency.strip()
+    efficiency = efficiency.strip("|")
+    efficiency = efficiency.strip()
 
     efficiency_mapping = {
         "poor |": "Poor",
@@ -204,13 +206,12 @@ def standardise_efficiency(efficiency):
         "average": "Average",
         "good": "Good",
         "very good": "Very Good",
+        "n/a": "unknown",
         "n/a |": "unknown",
-        "n/a |": "unknown",
-        "n/a | n/a |": "unknown",
-        "n/a | n/a | n/a |": "unknown",
-        "n/a | n/a | n/a | n/a |": "unknown",
-        "n/a | n/a | n/a": "unknown",
+        "n/a": "unknown",
         "n/a | n/a": "unknown",
+        "n/a | n/a | n/a": "unknown",
+        "n/a | n/a | n/a | n/a": "unknown",
         "no data!": "unknown",
         "unknown": "unknown",
     }
@@ -240,6 +241,7 @@ def clean_epc_data(df):
         df["LODGEMENT_DATE"] = df["LODGEMENT_DATE"].apply(date_formatter)
 
     if "INSPECTION_DATE" in df.columns:
+        df.dropna(subset=["INSPECTION_DATE"], inplace=True)
         df["INSPECTION_DATE"] = df["INSPECTION_DATE"].apply(date_formatter)
 
     if "TENURE" in df.columns:
