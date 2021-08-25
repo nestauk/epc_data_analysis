@@ -243,7 +243,14 @@ def get_year(date):
     year : int
         Year derived from date."""
 
+    if date == "unknown":
+        return "unknown"
+
     year = date.split("-")[0]
+
+    if len(year) != 4:
+        return "unknown"
+
     return int(year)
 
 
@@ -259,6 +266,9 @@ def get_date_as_int(date):
     ---------
     date : int
         Date as integer."""
+
+    if date == "unknown":
+        return "unknown"
 
     # Remove delimiters
     date = re.sub("-", "", date)
