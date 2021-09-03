@@ -350,12 +350,16 @@ def filter_by_year(df, year, up_to=True, selection=None):
     return df
 
 
-def count_number_of_entries(row, ref_counts):
+def count_number_of_entries(row, feature, ref_counts):
     """Count the number entries for given building based on
     building reference number.
 
     row : pandas.Series
         EPC dataset row.
+
+    feature: str
+        Feature by which to count building entries.
+        e.g. "BUILDING_REFERNCE_NUMBER" or "BUILDING_ID"
 
     ref_counts : pandas.Series
         Value counts for building reference number.
@@ -365,7 +369,7 @@ def count_number_of_entries(row, ref_counts):
     counts : int
         How many entries are there for given building."""
 
-    building_ref = row["BUILDING_REFERENCE_NUMBER"]
+    building_ref = row[feature]
     try:
         counts = ref_counts[building_ref]
     except KeyError:
@@ -374,20 +378,39 @@ def count_number_of_entries(row, ref_counts):
     return counts
 
 
-def get_build_entry_feature(df):
-    """Get feature that shows number of entries for any given building.
+def get_building_entry_feature(df, feature):
+    """Create feature that shows number of entries for any given building
+    based on BUILDING_REFERENCE_NUMBER or BUILDING_ID.
 
     df : pandas.DataFrame
         EPC dataframe.
+
+    feature: str
+        Feature by which to count building entries.
+        Has to be "BUILDING_REFERNCE_NUMBER" or "BUILDING_ID".
 
     Return
     ---------
     df : pandas.DataFrame
         EPC dataframe with # entry feature."""
 
-    ref_counts = df["BUILDING_REFERENCE_NUMBER"].value_counts()
+    # Catch invalid inputs
+    if feature not in ["BUILDING_REFERENCE_NUMBER", "BUILDING_ID"]:
+        raise IOError("Feature '{}' is not a valid feature.".format(feature))
 
-    df["N_ENTRIES"] = df.apply(
-        lambda row: count_number_of_entries(row, ref_counts), axis=1
+    feature_name_dict = {
+        "BUILDING_REFERENCE_NUMBER": "N_ENTRIES",
+        "BUILDING_ID": "N_ENTRIES_BUILD_ID",
+    }
+
+    # Get name of new feature
+    new_feature_name = feature_name_dict[feature]
+
+    # Count IDs
+    counts = df[feature].value_counts()
+
+    # Create new feature representing how many entries there are for building
+    df[new_feature_name] = df.apply(
+        lambda row: count_number_of_entries(row, feature, counts), axis=1
     )
     return df
