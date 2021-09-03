@@ -11,8 +11,50 @@ Last updated on 13/07/2021
 # Import
 import pandas as pd
 import re
+from hashlib import md5
 
 # ---------------------------------------------------------------------------------
+
+
+def short_hash(text):
+    """Generate a unique short hash for given string.
+
+    Parameters
+    ----------
+    text: str
+        String for which to get ID.
+
+    Return
+    ---------
+
+    short_code: int
+        Unique ID."""
+
+    hx_code = md5(text.encode()).hexdigest()
+    int_code = int(hx_code, 16)
+    short_code = str(int_code)[:16]
+    return int(short_code)
+
+
+def get_unique_building_ID(df):
+    """Add unique building ID column to dataframe.
+
+    Parameters
+    ----------
+    text: str
+        String for which to get ID.
+
+    Return
+    ---------
+
+    short_code: int
+        Unique ID."""
+
+    # Create unique address and building ID
+    df["UNIQUE_ADDRESS"] = df["ADDRESS1"] + df["POSTCODE"]
+    df["BUILDING_ID"] = df["UNIQUE_ADDRESS"].apply(short_hash)
+
+    return df
 
 
 def get_new_EPC_rating_features(df):
