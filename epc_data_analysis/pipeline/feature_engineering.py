@@ -162,6 +162,8 @@ def get_heating_features(df, fine_grained_HP_types=False):
     # Collections
     heating_system_types = []
     heating_source_types = []
+    has_hp_tags = []
+    hp_types = []
 
     # Get heating types
     heating_types = df["MAINHEAT_DESCRIPTION"]
@@ -172,6 +174,8 @@ def get_heating_features(df, fine_grained_HP_types=False):
         # Set default value
         system_type = "unknown"
         source_type = "unknown"
+        has_hp = False
+        hp_type = "NO HP"
 
         # If heating value exists
         if not (pd.isnull(heating) and isinstance(heating, float)):
@@ -194,18 +198,22 @@ def get_heating_features(df, fine_grained_HP_types=False):
             if "ground source heat pump" in heating:
                 system_type = "ground source heat pump"
                 source_type = "electric"
+                has_hp = True
 
             elif "air source heat pump" in heating:
                 system_type = "air source heat pump"
                 source_type = "electric"
+                has_hp = True
 
             elif "water source heat pump" in heating:
                 system_type = "water source heat pump"
                 source_type = "electric"
+                has_hp = True
 
             elif "heat pump" in heating:
                 system_type = "heat pump"
                 source_type = "electric"
+                has_hp = True
 
             # Electric heaters
             # --------------------------
@@ -258,19 +266,25 @@ def get_heating_features(df, fine_grained_HP_types=False):
                     if word in heating:
                         source_type = source
 
-        # Don't differentiate between heat pump types
-        if not fine_grained_HP_types:
+        # Set HP type
+        if has_hp:
+            hp_type = system_type
 
-            if "heat pump" in system_type:
+            # Don't differentiate between heat pump types
+            if not fine_grained_HP_types:
                 system_type = "heat pump"
 
         # Save heating system type and source type
         heating_system_types.append(system_type)
         heating_source_types.append(source_type)
+        has_hp_tags.append(has_hp)
+        hp_types.append(hp_type)
 
     # Add heating system and source to df
     df["HEATING_SYSTEM"] = heating_system_types
-    df["HEATING_SOURCE"] = heating_source_types
+    df["HEATING_FUEL"] = heating_source_types
+    df["HP_INSTALLED"] = has_hp_tags
+    df["HP_TYPE"] = hp_types
 
     return df
 
