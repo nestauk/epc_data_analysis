@@ -69,76 +69,57 @@ def standardise_tenure(tenure):
     return tenure_mapping[tenure]
 
 
-def standardise_constr_age(age):
-    """Standardise tenure types; one of the four categories:
-    rental (social), rental (private), owner-occupied, unknown
+def standardise_constr_age(age, adjust_age_bands=True):
+
+    """Standardise construction age bands and if necessary adjust
+    the age bands to combine the Scotland and England/Wales data.
 
     Parameters
     ----------
-    tenure : str
-        Raw tenure type.
+    age : str
+        Raw construction age.
+
+    merge_country_data : bool, default=True
+        Whether to merge Scotland and England/Wales age bands.
 
     Return
     ----------
-    standardised tenure : str
-        Standardised tenure type."""
+    Standardised age construction band : str
+        tandardised age construction band."""
 
     if isinstance(age, float):
         return "unknown"
 
     age = age.strip()
 
-    age_mapping = {
-        "England and Wales: 1900-1929": "England and Wales: 1900-1929",
-        "England and Wales: 1950-1966": "England and Wales: 1950-1966",
+    age_mapping_adjust_age_bands = {
         "England and Wales: before 1900": "England and Wales: before 1900",
-        "England and Wales: 1967-1975": "England and Wales: 1967-1975",
+        "England and Wales: 1900-1929": "England and Wales: 1900-1929",
         "England and Wales: 1930-1949": "England and Wales: 1930-1949",
-        "England and Wales: 1983-1990": "England and Wales: 1983-1990",
+        "England and Wales: 1950-1966": "England and Wales: 1950-1966",
+        "England and Wales: 1967-1975": "England and Wales: 1967-1975",
         "England and Wales: 1976-1982": "England and Wales: 1976-1982",
-        "England and Wales: 1996-2002": "England and Wales: 1996-2002",
+        "England and Wales: 1983-1990": "England and Wales: 1983-1990",
         "England and Wales: 1991-1995": "England and Wales: 1991-1995",
+        "England and Wales: 1996-2002": "England and Wales: 1996-2002",
         "England and Wales: 2003-2006": "England and Wales: 2003-2006",
         "England and Wales: 2007 onwards": "England and Wales: 2007 onwards",
         "before 1919": "Scotland: before 1919",
-        "1965-1975": "Scotland: 1965-1975",
+        "1919-1929": "Scotland: 1919-1929",
         "1930-1949": "Scotland: 1930-1949",
         "1950-1964": "Scotland: 1950-1964",
+        "1965-1975": "Scotland: 1965-1975",
+        "1976-1983": "Scotland: 1976-1983",
         "1984-1991": "Scotland: 1984-1991",
         "1992-1998": "Scotland: 1992-1998",
-        "1976-1983": "Scotland: 1976-1983",
-        "2003-2007": "Scotland: 2003-2007",
         "1999-2002": "Scotland: 1999-2002",
-        "1919-1929": "Scotland: 1919-1929",
+        "2003-2007": "Scotland: 2003-2007",
         "2008 onwards": "Scotland: 2008 onwards",
         "unknown": "unknown",
         "NO DATA!": "unknown",
         "INVALID!": "unknown",
         "Not applicable": "unknown",
     }
-
-    return age_mapping[age]
-
-
-def standardise_and_merge_constr_age(age):
-
-    """Standardise tenure types; one of the four categories:
-    rental (social), rental (private), owner-occupied, unknown
-
-    Parameters
-    ----------
-    tenure : str
-        Raw tenure type.
-
-    Return
-    ----------
-    standardised tenure : str
-        Standardised tenure type."""
-
-    if isinstance(age, float):
-        return "unknown"
-
-    age = age.strip()
 
     age_mapping = {
         "England and Wales: before 1900": "England and Wales: before 1900",
@@ -169,7 +150,10 @@ def standardise_and_merge_constr_age(age):
         "Not applicable": "unknown",
     }
 
-    return age_mapping[age]
+    if adjust_age_bands:
+        return age_mapping_adjust_age_bands[age]
+    else:
+        return age_mapping[age]
 
 
 def standardise_efficiency(efficiency):
@@ -250,6 +234,10 @@ def clean_epc_data(df):
 
     if "CONSTRUCTION_AGE_BAND" in df.columns:
         df["CONSTRUCTION_AGE_BAND"] = df["CONSTRUCTION_AGE_BAND"].apply(
-            standardise_and_merge_constr_age
+            standardise_constr_age
         )
+
+    if "NUMBER_HABITABLE_ROOMS" in df.columns:
+        df.loc[(df.NUMBER_HABITABLE_ROOMS >= 10), "NUMBER_HABITABLE_ROOMS"] = "10+"
+
     return df
