@@ -39,7 +39,8 @@ def load_Scotland_data(usecols=None, low_memory=False):
             EPC_DATA_PATH_SCOTLAND + file,
             low_memory=low_memory,
             usecols=usecols,
-            skiprows=1,  # don't load first row (more ellaborate feature names)
+            skiprows=1,  # don't load first row (more ellaborate feature names),
+            encoding="ISO-8859-1",
         )
         for file in directories
     ]
