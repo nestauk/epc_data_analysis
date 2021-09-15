@@ -50,6 +50,9 @@ def get_unique_building_ID(df):
     short_code: int
         Unique ID."""
 
+    # Remove samples with no address
+    df.dropna(subset=["ADDRESS1"], inplace=True)
+
     # Create unique address and building ID
     df["UNIQUE_ADDRESS"] = df["ADDRESS1"] + df["POSTCODE"]
     df["BUILDING_ID"] = df["UNIQUE_ADDRESS"].apply(short_hash)
@@ -338,13 +341,17 @@ def get_date_features(df):
     return df
 
 
-def filter_by_year(df, year, up_to=True, selection=None):
+def filter_by_year(df, building_reference, year, up_to=True, selection=None):
     """Filter EPC dataset by year of inspection/entry.
 
     Parameters
     ----------
     df : pandas.DataFrame
         Dataframe to which new features are added.
+
+    building_reference : str
+        Which building reference to use,
+        e.g. "BUILDING_REFERENCE_NUMBER" or "BUILDING_ID".
 
     year : int, None, "all"
         Year by which to filter data.
@@ -378,7 +385,7 @@ def filter_by_year(df, year, up_to=True, selection=None):
         df = (
             df.sort_values("DATE_INT", ascending=True)
             .drop_duplicates(
-                subset=["BUILDING_REFERENCE_NUMBER"], keep=selection_dict[selection]
+                subset=[building_reference], keep=selection_dict[selection]
             )
             .sort_index()
         )
@@ -455,4 +462,18 @@ def get_building_entry_feature(df, feature):
     df[new_feature_name] = df.apply(
         lambda row: count_number_of_entries(row, feature, counts), axis=1
     )
+    return df
+
+
+def get_additional_features(df):
+
+    df = get_date_features(df)
+
+    df = get_unique_building_ID(df)
+    df = get_building_entry_feature(df, "BUILDING_REFERENCE_NUMBER")
+    df = get_building_entry_feature(df, "BUILDING_ID")
+
+    df = get_heating_features(df)
+    df = get_new_EPC_rating_features(df)
+
     return df
