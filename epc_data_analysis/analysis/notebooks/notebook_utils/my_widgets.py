@@ -110,27 +110,25 @@ EPC_columns = [
 ]
 
 EPC_columns_selection = [
+    "ADDRESS1",
+    "POSTCODE",
+    "MAINS_GAS_FLAG",
+    "NUMBER_HABITABLE_ROOMS",
+    "LOCAL_AUTHORITY_LABEL",
+    "TRANSACTION_TYPE",
     "CURRENT_ENERGY_RATING",
     "POTENTIAL_ENERGY_RATING",
     "CURRENT_ENERGY_EFFICIENCY",
+    "ENERGY_CONSUMPTION_CURRENT",
     "TENURE",
     "MAINHEAT_ENERGY_EFF",
-    "MAINHEAT_ENV_EFF",
     "HOT_WATER_ENERGY_EFF",
-    "HOT_WATER_ENV_EFF",
     "FLOOR_ENERGY_EFF",
-    "FLOOR_ENV_EFF",
     "WINDOWS_ENERGY_EFF",
-    "WINDOWS_ENV_EFF",
     "WALLS_ENERGY_EFF",
-    "WALLS_ENV_EFF",
     "ROOF_ENERGY_EFF",
-    "ROOF_ENV_EFF",
     "MAINHEATC_ENERGY_EFF",
-    "MAINHEATC_ENV_EFF",
     "LIGHTING_ENERGY_EFF",
-    "LIGHTING_ENV_EFF",
-    "POSTCODE",
     "MAINHEAT_DESCRIPTION",
     "CO2_EMISSIONS_CURRENT",
     "CO2_EMISS_CURR_PER_FLOOR_AREA",
@@ -146,8 +144,15 @@ EPC_columns_selection = [
     "BUILT_FORM",
     "PROPERTY_TYPE",
     "CONSTRUCTION_AGE_BAND",
+    "TRANSACTION_TYPE",
+    "MAIN_FUEL",
+    "TOTAL_FLOOR_AREA",
+    "ENERGY_TARIFF",
 ]
 
+for value in EPC_columns_selection:
+    if value not in EPC_columns:
+        print(value)
 # ---------------------------------------------------------------------------------
 
 # Set box layout
