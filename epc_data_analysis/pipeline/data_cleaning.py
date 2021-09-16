@@ -92,7 +92,7 @@ def standardise_constr_age(age, adjust_age_bands=True):
 
     age = age.strip()
 
-    age_mapping_adjust_age_bands = {
+    age_mapping = {
         "England and Wales: before 1900": "England and Wales: before 1900",
         "England and Wales: 1900-1929": "England and Wales: 1900-1929",
         "England and Wales: 1930-1949": "England and Wales: 1930-1949",
@@ -121,7 +121,7 @@ def standardise_constr_age(age, adjust_age_bands=True):
         "Not applicable": "unknown",
     }
 
-    age_mapping = {
+    age_mapping_adjust_age_bands = {
         "England and Wales: before 1900": "England and Wales: before 1900",
         "England and Wales: 1900-1929": "1900-1929",
         "England and Wales: 1930-1949": "1930-1949",
@@ -203,6 +203,14 @@ def standardise_efficiency(efficiency):
     return efficiency_mapping[efficiency]
 
 
+def clean_local_authority(local_authority):
+
+    if local_authority in ["00EM", "16UD"]:
+        return "unknown"
+    else:
+        return local_authority
+
+
 def clean_epc_data(df):
     """Standardise and clean EPC data.
     For example, reformat dates and standardise cateogories.
@@ -239,5 +247,41 @@ def clean_epc_data(df):
 
     if "NUMBER_HABITABLE_ROOMS" in df.columns:
         df.loc[(df.NUMBER_HABITABLE_ROOMS >= 10), "NUMBER_HABITABLE_ROOMS"] = "10+"
+
+    if "WINDOWS_ENERGY_EFF" in df.columns:
+        df["WINDOWS_ENERGY_EFF"] = df["WINDOWS_ENERGY_EFF"].apply(
+            standardise_efficiency
+        )
+
+    if "FLOOR_ENERGY_EFF" in df.columns:
+        df["FLOOR_ENERGY_EFF"] = df["FLOOR_ENERGY_EFF"].apply(standardise_efficiency)
+
+    if "HOT_WATER_ENERGY_EFF" in df.columns:
+        df["HOT_WATER_ENERGY_EFF"] = df["HOT_WATER_ENERGY_EFF"].apply(
+            standardise_efficiency
+        )
+
+    if "LIGHTING_ENERGY_EFF" in df.columns:
+        df["LIGHTING_ENERGY_EFF"] = df["LIGHTING_ENERGY_EFF"].apply(
+            standardise_efficiency
+        )
+
+    if "LOCAL_AUTHORITY_LABEL" in df.columns:
+        df["LOCAL_AUTHORITY_LABEL"] = df["LOCAL_AUTHORITY_LABEL"].apply(
+            clean_local_authority
+        )
+
+    if "CURRENT_ENERGY_RATING" in df.columns:
+        df["CURRENT_ENERGY_RATING"] = df["CURRENT_ENERGY_RATING"].replace(
+            ["INVALID!"], "unknown"
+        )
+
+    if "POTENTIAL_ENERGY_RATING" in df.columns:
+        df["POTENTIAL_ENERGY_RATING"] = df["POTENTIAL_ENERGY_RATING"].replace(
+            ["INVALID!"], "unknown"
+        )
+
+    if "BUILT_FORM" in df.columns:
+        df["BUILT_FORM"] = df["BUILT_FORM"].replace(["NO DATA!"], "unknown")
 
     return df
