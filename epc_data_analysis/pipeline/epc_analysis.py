@@ -48,11 +48,11 @@ def get_emissions_info(df, feature_1, feature_2):
     # Total emissions
     total_emissions = df["CO2_EMISSIONS_CURRENT"].sum()
     total_emissions_by_area = df["CO2_EMISS_CURR_PER_FLOOR_AREA"].sum()
-    total = total_emissions = df[feature_1].sum()
+    total_feature_1 = df[feature_1].sum()  # usually one of the above
 
     # Get absolute, relative and mean emissions
     emissions = df.groupby(feature_2)[feature_1]
-    emissions_rel = emissions.sum() / total * 100
+    emissions_rel = emissions.sum() / total_feature_1 * 100
     emissions_abs = emissions.sum()
     emissions_mean = emissions.mean()
     emissions_by_dwelling = emissions_abs / df[feature_2].value_counts()
@@ -61,11 +61,11 @@ def get_emissions_info(df, feature_1, feature_2):
     emissions_dict = {
         "total emissions": total_emissions,
         "total emissions by area": total_emissions_by_area,
-        "total": total,
+        "total": total_feature_1,
         "relative emissions": emissions_rel,
         "absolute emissions": emissions_abs,
         "mean emissions": emissions_mean,
-        "emisisons by dwelling": emissions_by_dwelling,
+        "emissions by dwelling": emissions_by_dwelling,
     }
 
     return emissions_dict
