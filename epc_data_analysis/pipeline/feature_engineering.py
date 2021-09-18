@@ -94,6 +94,7 @@ def get_new_EPC_rating_features(df):
         "G": 1,
         "H": 0,
         "INVALID!": 0,
+        "unknown": 0,
     }
 
     EPC_cat_dict = {
@@ -327,11 +328,10 @@ def get_date_as_int(date):
         Date as integer."""
 
     if date == "unknown":
-        return "unknown"
+        return -1
 
-    # Remove delimiters
+    # Remove delimiter
     date = re.sub("-", "", date)
-    date = re.sub("/", "", date)
 
     return int(date)
 
@@ -349,7 +349,7 @@ def get_date_features(df):
     df : pandas.DataFrame
         Dataframe with new features."""
 
-    df["YEAR"] = df["INSPECTION_DATE"].apply(get_year)
+    df["ENTRY_YEAR"] = df["INSPECTION_DATE"].apply(get_year)
     df["DATE_INT"] = df["INSPECTION_DATE"].apply(get_date_as_int)
 
     return df
@@ -388,14 +388,15 @@ def filter_by_year(df, building_reference, year, up_to=True, selection=None):
     if year != "all" and year is not None:
 
         if up_to:
-            df = df.loc[df["YEAR"] <= year]
+            df = df.loc[df["ENTRY_YEAR"] <= year]
         else:
-            df = df.loc[df["YEAR"] == year]
+            df = df.loc[df["ENTRY_YEAR"] == year]
 
     # Filter by selection
     selection_dict = {"first entry": "first", "latest entry": "last"}
 
     if selection in ["first entry", "latest entry"]:
+
         df = (
             df.sort_values("DATE_INT", ascending=True)
             .drop_duplicates(
