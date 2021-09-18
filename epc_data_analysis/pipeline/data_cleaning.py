@@ -31,11 +31,21 @@ def date_formatter(date):
         return "unknown"
 
     if "-" in date:
-        return date
+        year, month, day = str(date).split("-")
+    elif "/" in date:
+        day, month, year = str(date).split("/")
+    else:
+        return "unknown"
 
-    day, month, year = str(date).split("/")
+    if year.startswith("00"):
+        year = "20" + year[-2:]
 
-    return year + "-" + month + "-" + day
+    if len(year) != 4 or int(year) > 2022 or int(year) < 2008:
+        return "unknown"
+
+    formatted_date = year + "-" + month + "-" + day
+
+    return formatted_date
 
 
 def standardise_tenure(tenure):
