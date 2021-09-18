@@ -58,7 +58,7 @@ def save_figure(plt, plot_title=None, file_extension=".png", dpi=500):
         None"""
 
     # Tight layout
-    plt.tight_layout()
+    # plt.tight_layout()
 
     # Automatically generate filename
     if plot_title is not None:
@@ -110,22 +110,22 @@ def get_readable_tick_labels(plt, ticklabel_type, axis):
     # 1000 --> k
     if ticklabel_type == "k":
         division_type = "k"
-        division_int = 1000
+        division_int = 1000.0
 
     # 1000000 --> m
     elif ticklabel_type == "m":
         division_type = "m"
-        division_int = 1000000
+        division_int = 1000000.0
 
     # "" or None --> ""
     elif ticklabel_type == "" or ticklabel_type is None:
         division_type = ""
-        division_int = 1
+        division_int = 1.0
 
     # % --> %
     elif ticklabel_type == "%":
         division_type = "%"
-        division_int = 1
+        division_int = 1.0
 
     else:
         raise IOError("Invalid value: ticklabel has to be '', 'm', 'k' or '%'")
