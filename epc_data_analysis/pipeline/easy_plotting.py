@@ -33,7 +33,7 @@ epc_data_config = get_yaml_config(
 FIG_PATH = str(PROJECT_DIR) + epc_data_config["FIGURE_PATH"]
 
 
-def save_figure(plt, plot_title=None, file_extension=".png", dpi=500):
+def save_figure(plt, plot_title=None, fig_path=None, file_extension=".png", dpi=500):
     """Create filename and save figure.
 
     Parameters
@@ -45,6 +45,10 @@ def save_figure(plt, plot_title=None, file_extension=".png", dpi=500):
     plot_title: str, None, default=None
         Use plot title to generate filename.
         If None, use "figure" as filename.
+
+    fig_path: str, None, default=None
+        Where to save the plot.
+        If not specified, use FIG_PATH given by config file.
 
     file_extension: str, default=".png"
         File extension, file format to save.
@@ -69,8 +73,11 @@ def save_figure(plt, plot_title=None, file_extension=".png", dpi=500):
     else:
         save_filename = "figure.png"
 
+    # Adjust figure path if necessary
+    fig_path = fig_path if fig_path is not None else FIG_PATH
+
     # Save fig
-    plt.savefig(FIG_PATH + save_filename + file_extension, dpi=dpi)
+    plt.savefig(fig_path + save_filename + file_extension, dpi=dpi)
 
 
 def get_readable_tick_labels(plt, ticklabel_type, axis):
@@ -150,6 +157,7 @@ def plot_subcategory_distribution(
     normalize=False,
     color="lightseagreen",
     plot_title=None,
+    fig_save_path=None,
     y_label="",
     x_label="",
     y_ticklabel_type=None,
@@ -176,6 +184,9 @@ def plot_subcategory_distribution(
         Title to display above plot.
         If None, title is created automatically.
         Plot title is also used when saving file.
+
+    fig_save_path : str, None, default=None
+        Location where to save plot.
 
     y_label : str, default=""
         Label for y-axis.
@@ -245,7 +256,7 @@ def plot_subcategory_distribution(
     ax.set_ylim([0.0, int(highest_count + highest_count / 8)])
 
     # Save figure
-    save_figure(plt, plot_title)
+    save_figure(plt, plot_title, fig_path=fig_save_path)
 
     # Show plot
     plt.show()
@@ -257,6 +268,7 @@ def plot_feature_by_subcategories(
     category,
     subcategory=None,
     plot_title=None,
+    fig_save_path=None,
     y_label="",
     x_label="",
     plot_kind="hist",
@@ -286,6 +298,9 @@ def plot_feature_by_subcategories(
          Title to display above plot.
          If None, title is created automatically.
          Plot title is also used when saving file.
+
+    fig_save_path : str, None, default=None
+        Location where to save plot.
 
      y_label : str, default=""
          Label for y-axis.
@@ -332,7 +347,7 @@ def plot_feature_by_subcategories(
     ) if x_tick_rotation == 45 else plt.xticks(rotation=x_tick_rotation)
 
     # Save figure
-    save_figure(plt, plot_title)
+    save_figure(plt, plot_title, fig_path=fig_save_path)
 
     # Show plot
     plt.show()
@@ -346,6 +361,7 @@ def plot_subcats_by_other_subcats(
     feature_2_order=None,
     normalize=True,
     plot_title=None,
+    fig_save_path=None,
     y_label="",
     x_label="",
     plot_kind="bar",
@@ -382,11 +398,13 @@ def plot_subcats_by_other_subcats(
     normalize : bool, default=True
         If True, relative numbers (percentage) instead of absolute numbers.
 
-
      plot_title : str, None, default=None
          Title to display above plot.
          If None, title is created automatically.
          Plot title is also used when saving file.
+
+    fig_save_path : str, None, default=None
+        Location where to save plot.
 
      y_label : str, default=""
          Label for y-axis.
@@ -489,7 +507,7 @@ def plot_subcats_by_other_subcats(
         plt.legend(bbox_to_anchor=(1.05, 1), loc="upper left")
 
     # Save figure
-    save_figure(plt, plot_title)
+    save_figure(plt, plot_title, fig_path=fig_save_path)
 
     # Show plot
     plt.show()
@@ -502,6 +520,7 @@ def plot_correlation(
     with_hist_subplots=True,
     ylim_max=100,
     plot_title=None,
+    fig_save_path=None,
     y_label="",
     x_label="",
     x_tick_rotation=0,
@@ -529,6 +548,9 @@ def plot_correlation(
          Title to display above plot.
          If None, title is created automatically.
          Plot title is also used when saving file.
+
+    fig_save_path : str, None, default=None
+        Location where to save plot.
 
      y_label : str, default=""
          Label for y-axis.
@@ -604,7 +626,7 @@ def plot_correlation(
         ) if x_tick_rotation == 45 else plt.xticks(rotation=x_tick_rotation)
 
     # Save figure
-    save_figure(plt, plot_title)
+    save_figure(plt, plot_title, fig_save=fig_save_path)
 
     # Show plot
     plt.show()
