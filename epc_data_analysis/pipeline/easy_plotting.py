@@ -33,7 +33,7 @@ epc_data_config = get_yaml_config(
 FIG_PATH = str(PROJECT_DIR) + epc_data_config["FIGURE_PATH"]
 
 
-def save_figure(plt, plot_title=None, fig_path=None, file_extension=".png", dpi=500):
+def save_figure(plt, plot_title=None, fig_path=None, file_extension=".png", dpi=1000):
     """Create filename and save figure.
 
     Parameters
