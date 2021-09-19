@@ -477,6 +477,9 @@ def get_building_entry_feature(df, feature):
     df[new_feature_name] = df.apply(
         lambda row: count_number_of_entries(row, feature, counts), axis=1
     )
+
+    df.loc[(df[new_feature_name] >= 5), new_feature_name] = "5.0+"
+
     return df
 
 
