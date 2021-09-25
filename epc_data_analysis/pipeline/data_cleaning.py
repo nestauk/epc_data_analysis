@@ -238,6 +238,9 @@ def clean_epc_data(df):
     ## Drop samples with now lodegement date
     # df.dropna(subset=["LODGEMENT_DATE", "INSPECTION_DATE"], inplace=True)
 
+    for column in df.columns:
+        df[column] = df[column].fillna("unknown")
+
     if "LOGEMENT_DATE" in df.columns:
         # Reformat dates
         df["LODGEMENT_DATE"] = df["LODGEMENT_DATE"].apply(date_formatter)
@@ -256,7 +259,13 @@ def clean_epc_data(df):
         )
 
     if "NUMBER_HABITABLE_ROOMS" in df.columns:
-        df.loc[(df.NUMBER_HABITABLE_ROOMS >= 10), "NUMBER_HABITABLE_ROOMS"] = "10+"
+        df.loc[
+            (
+                (df.NUMBER_HABITABLE_ROOMS != "unknown")
+                & (df.NUMBER_HABITABLE_ROOMS >= 10)
+            ),
+            "NUMBER_HABITABLE_ROOMS",
+        ] = "10+"
 
     if "WINDOWS_ENERGY_EFF" in df.columns:
         df["WINDOWS_ENERGY_EFF"] = df["WINDOWS_ENERGY_EFF"].apply(
