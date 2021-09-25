@@ -77,7 +77,7 @@ def save_figure(plt, plot_title=None, fig_path=None, file_extension=".png", dpi=
     fig_path = fig_path if fig_path is not None else FIG_PATH
 
     # Save fig
-    plt.savefig(fig_path + save_filename + file_extension, dpi=dpi)
+    plt.savefig(fig_path + save_filename + file_extension, dpi=dpi, bbox_inches="tight")
 
 
 def get_readable_tick_labels(plt, ticklabel_type, axis):
@@ -210,12 +210,14 @@ def plot_subcategory_distribution(
     if normalize:
 
         # Get counts for every category
-        category_counts = round(df[category].value_counts(normalize=True) * 100, 2)
+        category_counts = round(
+            df[category].value_counts(dropna=False, normalize=True) * 100, 2
+        )
         y_ticklabel_type = "%"
 
     else:
         # Get counts for every category
-        category_counts = df[category].value_counts()
+        category_counts = df[category].value_counts(dropna=False)
 
     # Plot category counts
     category_counts.plot(kind="bar", color=color)
@@ -328,7 +330,7 @@ def plot_feature_by_subcategories(
         plot_title = feature_of_interest + tag
 
     # Plot distribution for feature values/subcategories
-    ratings = df[feature_of_interest].value_counts().sort_index()
+    ratings = df[feature_of_interest].value_counts(dropna=False).sort_index()
 
     # Plot histogram with 30 bins
     if plot_kind == "hist":
@@ -430,8 +432,8 @@ def plot_subcats_by_other_subcats(
          If rotation set to 45, make end of label align with tick (ha="right")."""
 
     # Remove all samples for which feature 1 or feature 2 is NaN.
-    df = df[df[feature_1].notna()]
-    df = df[df[feature_2].notna()]
+    # df = df[df[feature_1].notna()]
+    # df = df[df[feature_2].notna()]
 
     # Get set of values/subcategories for features.
     feature_1_values = list(set(df[feature_1].sort_index()))
@@ -445,13 +447,13 @@ def plot_subcats_by_other_subcats(
     feat_bar_dict = {}
 
     # Get totals for noramlisation
-    totals = df[feature_1].value_counts()
+    totals = df[feature_1].value_counts(dropna=False)
 
     # For every feature 2 value/subcategory, get feature 1 values
     # e.g. for every tenure type, get windows energy efficiencies
     for feat2 in feature_2_values:
         dataset_of_interest = df.loc[df[feature_2] == feat2][feature_1]
-        data_of_interest = dataset_of_interest.value_counts()
+        data_of_interest = dataset_of_interest.value_counts(dropna=False)
 
         if normalize:
             feat_bar_dict[feat2] = data_of_interest / totals * 100
