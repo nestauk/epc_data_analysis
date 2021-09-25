@@ -13,6 +13,9 @@ import pandas as pd
 import re
 from hashlib import md5
 
+from epc_data_analysis import getters
+from epc_data_analysis.pipeline import data_cleaning
+
 # ---------------------------------------------------------------------------------
 
 
@@ -327,6 +330,9 @@ def get_date_as_int(date):
     date : int
         Date as integer."""
 
+    if isinstance(date, int):
+        return date
+
     if date == "unknown":
         return -1
 
@@ -350,6 +356,7 @@ def get_date_features(df):
         Dataframe with new features."""
 
     df["ENTRY_YEAR"] = df["INSPECTION_DATE"].apply(get_year)
+    df["ENTRY_YEAR_INT"] = df["ENTRY_YEAR"].apply(get_date_as_int)
     df["DATE_INT"] = df["INSPECTION_DATE"].apply(get_date_as_int)
 
     return df
@@ -388,9 +395,9 @@ def filter_by_year(df, building_reference, year, up_to=True, selection=None):
     if year != "all" and year is not None:
 
         if up_to:
-            df = df.loc[df["ENTRY_YEAR"] <= year]
+            df = df.loc[df["ENTRY_YEAR_INT"] <= year]
         else:
-            df = df.loc[df["ENTRY_YEAR"] == year]
+            df = df.loc[df["ENTRY_YEAR_INT"] == year]
 
     # Filter by selection
     selection_dict = {"first entry": "first", "latest entry": "last"}
@@ -440,6 +447,31 @@ def count_number_of_entries(row, feature, ref_counts):
         return building_ref
 
     return counts
+
+
+def get_coordinates(df):
+    """Add coordinates (longitude and latitude) to the dataframe
+    based on the postcode.
+
+    df : pandas.DataFrame
+        EPC dataframe.
+
+    Return
+    ---------
+    df : pandas.DataFrame
+        Same dataframe with longitude and latitude columns added."""
+
+    # Get postcode/coordinates
+    location_df = getters.util_data.get_location_data()
+
+    # Reformat POSTCODE
+    df = data_cleaning.reformat_postcode(df)
+    location_df = data_cleaning.reformat_postcode(location_df)
+
+    # Merge with location data
+    df = pd.merge(df, location_df, on=["POSTCODE"])
+
+    return df
 
 
 def get_building_entry_feature(df, feature):
