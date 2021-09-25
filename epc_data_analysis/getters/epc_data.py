@@ -12,6 +12,7 @@ import os
 import re
 
 from epc_data_analysis import get_yaml_config, Path, PROJECT_DIR
+from epc_data_analysis.pipeline import feature_engineering, data_cleaning
 
 # ---------------------------------------------------------------------------------
 
@@ -138,6 +139,39 @@ def load_epc_data(subset="all", usecols=None, low_memory=False):
 
     else:
         raise IOError("'{}' is not a valid subset of the EPC dataset.".format(subset))
+
+
+def preprocess_data(df, save_file=None, remove_duplicates=True, verbose=True):
+
+    processing_steps = []
+    processing_steps.append(("Original data", df.shape[0], df.shape[1]))
+
+    df = data_cleaning.clean_epc_data(df)
+    processing_steps.append(("After cleaning", df.shape[0], df.shape[1]))
+
+    df = feature_engineering.get_additional_features(df)
+    processing_steps.append(("After adding features", df.shape[0], df.shape[1]))
+
+    if remove_duplicates:
+
+        df = feature_engineering.filter_by_year(
+            df, "BUILDING_ID", None, selection="latest entry"
+        )
+        processing_steps.append(("After removing duplicates", df.shape[0], df.shape[1]))
+
+    if verbose:
+
+        for step in processing_steps:
+            print("{}:\t{} samples, {} features".format(step[0], step[1], step[2]))
+
+    if save_file is not None:
+
+        if not remove_duplicates:
+            save_file = save_file[:-4] + "_with_duplicates.csv"
+
+        df.to_csv(save_file, index=False)
+
+    return df
 
 
 # ---------------------------------------------------------------------------------
