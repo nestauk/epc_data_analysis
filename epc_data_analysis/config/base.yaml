@@ -1,12 +1,127 @@
-EPC_DATASET_PATH: "/inputs/EPC_data/all-domestic-certificates/"
-EPC_DATASET_SCOTLAND_PATH: "/inputs/EPC_data/EPC_data_Scotland/"
+RAW_ENG_WALES_DATA_ZIP: "/inputs/EPC_data/raw_data/England_Wales/all-domestic-certificates.zip"
+RAW_SCOTLAND_DATA_ZIP: "/inputs/EPC_data/raw_data/Scotland/D_EPC_data.zip"
+
+RAW_ENG_WALES_DATA_PATH: "/inputs/EPC_data/raw_data/England_Wales/"
+RAW_SCOTLAND_DATA_PATH: "/inputs/EPC_data/raw_data/Scotland/"
+
+SCOTLAND_SAMPLE_FILE: "D_EPC_data_2012_Q4_extract_0721.csv"
+ENG_WALES_SAMPLE_FILE: "domestic-W06000015-Cardiff/certificates.csv"
+
+RAW_EPC_DATA_PATH: "/outputs/EPC_data/preprocessed_data/Q2_2021/EPC_GB_raw.csv"
+PREPROC_EPC_DATA_DEDUPL_PATH: "/outputs/EPC_data/preprocessed_data/Q2_2021/EPC_GB_preprocessed_and_deduplicated.csv"
+PREPROC_EPC_DATA_PATH: "/outputs/EPC_data/preprocessed_data/Q2_2021/EPC_GB_preprocessed.csv"
+
+PREPROC_EPC_DEDUPL_WITH_LOC_PATH: "/outputs/EPC_data/data_viz/EPC_GB_preproc_dedupl_plus_loc.csv"
+PREPROC_EPC_WITH_LOC_PATH: "/outputs/EPC_data/data_viz/EPC_GB_preproc_plus_loc.csv"
+
+PROCESSED_EPC_OUTPUT_PATH: "/inputs/EPC_data/preprocessed_data/Q2_2021/"
 
 POSTCODE_PATH: "/inputs/ukpostcodes.csv"
 WIMD_PATH: "/inputs/wimd_df.csv"
 
-#FIGURE_PATH: "/outputs/data/Wales/Figures/"
 FIGURE_PATH: "/outputs/data/Comparison/Figures/"
 
-KEPLER_CONFIG_PATH: "/epc_data_analysis/analysis/notebooks/Kepler/"
-KEPLER_CONFIG_FILE: "/epc_data_analysis/analysis/notebooks/Kepler/tenure_type_correct_colors_IMD_config.txt"
-KEPLER_OUTPUT_PATH: "/outputs/data/Wales/Kepler/"
+KEPLER_MAPS_PATH: "/epc_data_analysis/config/kepler/map_configs/"
+KEPLER_OUTPUT_PATH: "/outputs/visualisations/kepler/"
+
+EPC_FEAT_SELECTION:
+  [
+    "ADDRESS1",
+    "POSTCODE",
+    "POSTTOWN",
+    "MAINS_GAS_FLAG",
+    "NUMBER_HABITABLE_ROOMS",
+    "LOCAL_AUTHORITY_LABEL",
+    "TRANSACTION_TYPE",
+    "CURRENT_ENERGY_RATING",
+    "POTENTIAL_ENERGY_RATING",
+    "CURRENT_ENERGY_EFFICIENCY",
+    "ENERGY_CONSUMPTION_CURRENT",
+    "TENURE",
+    "MAINHEAT_ENERGY_EFF",
+    "SHEATING_ENERGY_EFF",
+    "HOT_WATER_ENERGY_EFF",
+    "FLOOR_ENERGY_EFF",
+    "WINDOWS_ENERGY_EFF",
+    "WALLS_ENERGY_EFF",
+    "ROOF_ENERGY_EFF",
+    "MAINHEATC_ENERGY_EFF",
+    "LIGHTING_ENERGY_EFF",
+    "MAINHEAT_DESCRIPTION",
+    "CO2_EMISSIONS_CURRENT",
+    "CO2_EMISS_CURR_PER_FLOOR_AREA",
+    "LIGHTING_COST_CURRENT",
+    "LIGHTING_COST_POTENTIAL",
+    "HEATING_COST_CURRENT",
+    "HEATING_COST_POTENTIAL",
+    "HOT_WATER_COST_CURRENT",
+    "HOT_WATER_COST_POTENTIAL",
+    "BUILDING_REFERENCE_NUMBER",
+    "LODGEMENT_DATE",
+    "INSPECTION_DATE",
+    "BUILT_FORM",
+    "PROPERTY_TYPE",
+    "CONSTRUCTION_AGE_BAND",
+    "TRANSACTION_TYPE",
+    "MAIN_FUEL",
+    "TOTAL_FLOOR_AREA",
+    "ENERGY_TARIFF",
+  ]
+
+EPC_PREPROC_FEAT_SELECTION:
+  [
+    "BUILDING_REFERENCE_NUMBER",
+    "ADDRESS1",
+    "POSTTOWN",
+    "POSTCODE",
+    "INSPECTION_DATE",
+    "LODGEMENT_DATE",
+    "ENERGY_CONSUMPTION_CURRENT",
+    "TOTAL_FLOOR_AREA",
+    "CURRENT_ENERGY_EFFICIENCY",
+    "CURRENT_ENERGY_RATING",
+    "POTENTIAL_ENERGY_RATING",
+    "CO2_EMISS_CURR_PER_FLOOR_AREA",
+    "WALLS_ENERGY_EFF",
+    "ROOF_ENERGY_EFF",
+    "FLOOR_ENERGY_EFF",
+    "WINDOWS_ENERGY_EFF",
+    "MAINHEAT_DESCRIPTION",
+    "MAINHEAT_ENERGY_EFF",
+    "MAINHEATC_ENERGY_EFF",
+    "SHEATING_ENERGY_EFF",
+    "HOT_WATER_ENERGY_EFF",
+    "LIGHTING_ENERGY_EFF",
+    "CO2_EMISSIONS_CURRENT",
+    "HEATING_COST_CURRENT",
+    "HEATING_COST_POTENTIAL",
+    "HOT_WATER_COST_CURRENT",
+    "HOT_WATER_COST_POTENTIAL",
+    "LIGHTING_COST_CURRENT",
+    "LIGHTING_COST_POTENTIAL",
+    "CONSTRUCTION_AGE_BAND",
+    "NUMBER_HABITABLE_ROOMS",
+    "LOCAL_AUTHORITY_LABEL",
+    "MAINS_GAS_FLAG",
+    "MAIN_FUEL",
+    "ENERGY_TARIFF",
+    "TENURE",
+    "TRANSACTION_TYPE",
+    "BUILT_FORM",
+    "PROPERTY_TYPE",
+    "COUNTRY",
+    "ENTRY_YEAR",
+    "ENTRY_YEAR_INT",
+    "DATE_INT",
+    "UNIQUE_ADDRESS",
+    "BUILDING_ID",
+    "N_ENTRIES",
+    "N_ENTRIES_BUILD_ID",
+    "HEATING_SYSTEM",
+    "HEATING_FUEL",
+    "HP_INSTALLED",
+    "HP_TYPE",
+    "CURR_ENERGY_RATING_NUM",
+    "ENERGY_RATING_CAT",
+    "DIFF_POT_ENERGY_RATING",
+  ]
