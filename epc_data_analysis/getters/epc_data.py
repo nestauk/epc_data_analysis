@@ -16,24 +16,16 @@ from epc_data_analysis.pipeline import feature_engineering, data_cleaning
 
 
 # Load config file
-epc_data_config = get_yaml_config(
-    Path(str(PROJECT_DIR) + "/epc_data_analysis/config/base.yaml")
-)
+config = get_yaml_config(Path(str(PROJECT_DIR) + "/epc_data_analysis/config/base.yaml"))
 
 # Get paths
-RAW_ENG_WALES_DATA_PATH = str(PROJECT_DIR) + epc_data_config["RAW_ENG_WALES_DATA_PATH"]
-RAW_SCOTLAND_DATA_PATH = str(PROJECT_DIR) + epc_data_config["RAW_SCOTLAND_DATA_PATH"]
+RAW_ENG_WALES_DATA_PATH = str(PROJECT_DIR) + config["RAW_ENG_WALES_DATA_PATH"]
+RAW_SCOTLAND_DATA_PATH = str(PROJECT_DIR) + config["RAW_SCOTLAND_DATA_PATH"]
 
-RAW_ENG_WALES_DATA_ZIP = str(PROJECT_DIR) + epc_data_config["RAW_ENG_WALES_DATA_ZIP"]
-RAW_SCOTLAND_DATA_ZIP = str(PROJECT_DIR) + epc_data_config["RAW_SCOTLAND_DATA_ZIP"]
+RAW_ENG_WALES_DATA_ZIP = str(PROJECT_DIR) + config["RAW_ENG_WALES_DATA_ZIP"]
+RAW_SCOTLAND_DATA_ZIP = str(PROJECT_DIR) + config["RAW_SCOTLAND_DATA_ZIP"]
 
-RAW_EPC_DATA_PATH = str(PROJECT_DIR) + epc_data_config["RAW_EPC_DATA_PATH"]
-PREPROC_EPC_DATA_PATH = str(PROJECT_DIR) + epc_data_config["PREPROC_EPC_DATA_PATH"]
-PREPROC_EPC_DATA_DEDUPL_PATH = (
-    str(PROJECT_DIR) + epc_data_config["PREPROC_EPC_DATA_DEDUPL_PATH"]
-)
-
-EPC_FEAT_SELECTION = epc_data_config["EPC_FEAT_SELECTION"]
+RAW_EPC_DATA_PATH = str(PROJECT_DIR) + config["RAW_EPC_DATA_PATH"]
 
 
 def extract_data(file_path):
@@ -186,7 +178,7 @@ def load_Wales_England_data(subset=None, usecols=None, low_memory=False):
     return EPC_certs
 
 
-def load_epc_data(subset="GB", usecols=None, low_memory=False):
+def load_raw_epc_data(subset="GB", usecols=None, low_memory=False):
     """Load and return EPC dataset, or specific subset, as pandas dataframe.
 
     Parameters
@@ -241,136 +233,49 @@ def load_epc_data(subset="GB", usecols=None, low_memory=False):
         raise IOError("'{}' is not a valid subset of the EPC dataset.".format(subset))
 
 
-def preprocess_data(df, remove_duplicates=True, save_data=True, verbose=True):
-    """Preprocess the raw EPC data by cleaning it and removing duplications.
-    The data at the different processing steps can be saved.
-
-    The processing steps:
-
-    - raw:
-    Merged but otherwise not altered EPC data
-
-    - preprocessed:
-    Partially cleaned and with additional features
-
-    - preprocessed_dedupl:
-    Same as 'preprocessed' but without duplicates
+def load_cleansed_EPC(remove_duplicates=True, usecols=None):
+    """Load the cleansed EPC dataset (provided by EST)
+    with the option of excluding/including duplicates.
 
     Parameters
     ----------
-    df : pandas.DataFrame
-        Dataframe holding EPC data to process.
-
-    remove_duplicates : bool, default=True
+    remove_duplicates : bool, default=True.
         Whether or not to remove duplicates.
 
-    save_data : bool, default=True
-        Whether or not to save preprocessed data at different stages (original, cleaned, deduplicated).
-
-    verbose : bool, default=True
-        Print number of features and samples after each processing step.
-
-    Return
-    ---------
-    df : pandas.DataFrame
-        Preprocessed EPC dataset."""
-
-    # --------------------------------
-    # Raw data
-    # --------------------------------
-
-    if save_data:
-        # Save unaltered_version
-        df.to_csv(RAW_EPC_DATA_PATH, index=False)
-
-    processing_steps = []
-    processing_steps.append(("Original data", df.shape[0], df.shape[1]))
-
-    # --------------------------------
-    # Preprocessing data
-    # --------------------------------
-
-    df = data_cleaning.clean_epc_data(df)
-    processing_steps.append(("After cleaning", df.shape[0], df.shape[1]))
-
-    df = feature_engineering.get_additional_features(df)
-    processing_steps.append(("After adding features", df.shape[0], df.shape[1]))
-
-    if save_data:
-        # Save unaltered_version
-        df.to_csv(PREPROC_EPC_DATA_PATH, index=False)
-
-    # --------------------------------
-    # Deduplicated data
-    # --------------------------------
-
-    if remove_duplicates:
-
-        df = feature_engineering.filter_by_year(
-            df, "BUILDING_ID", None, selection="latest entry"
-        )
-        processing_steps.append(("After removing duplicates", df.shape[0], df.shape[1]))
-
-        if save_data:
-            # Save unaltered_version
-            df.to_csv(PREPROC_EPC_DATA_DEDUPL_PATH, index=False)
-
-    # --------------------------------
-    # Print stats
-    # --------------------------------
-
-    if verbose:
-
-        for step in processing_steps:
-            print("{}:\t{} samples, {} features".format(step[0], step[1], step[2]))
-
-    return df
-
-
-def load_and_preprocess_epc_data(
-    subset="GB", usecols=EPC_FEAT_SELECTION, remove_duplicates=True, save_data=True
-):
-    """Load and preprocess the EPC data.
-
-    Parameters
-    ----------
-    subset : {'GB', 'Wales', 'England', 'Scotland', None}, default='GB'
-        EPC certificate area subset.
-
-    usecols : list, default=EPC_FEAT_SELECTION
+    usecols : list, default=None
         List of features/columns to load from EPC dataset.
-        By default, a pre-selected list of features (specified in the config file) is used.
         If None, then all features will be loaded.
 
-    remove_duplicates : bool, default=True
-        Whether or not to remove duplicates.
-
-    save_data : bool, default=True
-        Whether or not to save preprocessed data at different stages (original, cleaned, deduplicated).
-
-
     Return
-    ---------
-    epc_df : pandas.DataFrame
-        Preprocessed EPC dataset."""
+    ----------
+    cleansed_epc : pandas.DataFrame
+        Cleansed EPC datast as dataframe."""
 
-    # Do not save/overwrite the preprocessed data when not loading entire GB dataset
-    # in order to prevent confusion.
-    if subset != "GB":
-        print(
-            "The precessed data will be returned but not be written to file. Change subset to 'GB' or save processed data manually."
-        )
-        save_data = False
+    if remove_duplicates:
+        file_path = str(PROJECT_DIR) + config["EST_CLEANSED_EPC_DATA_DEDUPL_PATH"]
+    else:
+        file_path = str(PROJECT_DIR) + config["EST_CLEANSED_EPC_DATA_PATH"]
 
-    epc_df = load_epc_data(subset=subset, usecols=usecols)
-    epc_df = preprocess_data(
-        epc_df, remove_duplicates=remove_duplicates, save_data=save_data
-    )
-    return epc_df
+    # If file does not exist (probably just not unzipped), unzip the data
+    if not Path(file_path).is_file():
+        extract_data(file_path + ".zip")
+
+    print("Loading cleansed EPC data... This will take a moment.")
+    cleansed_epc = pd.read_csv(file_path, usecols=usecols, low_memory=False)
+
+    # Drop first column
+    if "Unnamed: 0" in cleansed_epc.columns:
+        cleansed_epc = cleansed_epc.drop(columns="Unnamed: 0")
+
+    # Add HP feature
+    cleansed_epc["HEAT_PUMP"] = cleansed_epc.FINAL_HEATING_SYSTEM == "Heat pump"
+    print("Done!")
+
+    return cleansed_epc
 
 
 def load_preprocessed_epc_data(
-    version="preprocessed_dedupl", usecols=None, low_memory=False
+    version="preprocessed_dedupl", usecols=None, snapshot_data=False, low_memory=False
 ):
     """Load the EPC dataset including England, Wales and Scotland.
     Select one of the following versions:
@@ -393,6 +298,10 @@ def load_preprocessed_epc_data(
         List of features/columns to load from EPC dataset.
         If None, then all features will be loaded.
 
+    snapshot_data : bool, default=False
+        If True, load the snapshot version of the preprocessed EPC data saved in /inputs
+        instead of the most recent version in /outputs.
+
     low_memory : bool, default=False
         Internally process the file in chunks, resulting in lower memory use while parsing,
         but possibly mixed type inference.
@@ -410,7 +319,10 @@ def load_preprocessed_epc_data(
     }
 
     # Get the respective file path for version
-    file_path = str(PROJECT_DIR) + epc_data_config[version_path_dict[version]]
+    file_path = str(PROJECT_DIR) + config[version_path_dict[version]]
+
+    if snapshot_data:
+        file_path = str(PROJECT_DIR) + config["SNAPSHOT_" + version_path_dict[version]]
 
     # If file does not exist (likely just not unzipped), unzip the data
     if not Path(file_path).is_file():
@@ -422,14 +334,30 @@ def load_preprocessed_epc_data(
     return epc_df
 
 
-# ---------------------------------------------------------------------------------
+def get_epc_sample(full_df, sample_size):
+    """Randomly sample a subset of the full data.
+
+    Parameters
+    ----------
+    full_df : pandas.DataFrame
+        Full dataframe from which to extract a subset.
+
+    sample_size: int
+        Size of subset / number of samples.
+
+    Return
+    ----------
+    sample_df : pandas.DataFrame
+        Randomly sampled subset of full dataframe."""
+
+    rand_ints = np.random.choice(len(full_df), size=sample_size)
+    sample_df = full_df.iloc[rand_ints]
+
+    return sample_df
 
 
 def main():
-    """Main function: Loads and preprocessed EPC data with default settings."""
-
-    epc_df = load_and_preprocess_epc_data()
-    print(epc_df.head())
+    """Main function for testing."""
 
 
 if __name__ == "__main__":
