@@ -19,10 +19,14 @@ PROCESSED_EPC_OUTPUT_PATH: "/inputs/EPC_data/preprocessed_data/Q2_2021/"
 POSTCODE_PATH: "/inputs/ukpostcodes.csv"
 WIMD_PATH: "/inputs/wimd_df.csv"
 
-FIGURE_PATH: "/outputs/data/Comparison/Figures/"
+FIGURE_PATH: "/outputs/figures/"
 
 KEPLER_MAPS_PATH: "/epc_data_analysis/config/kepler/map_configs/"
 KEPLER_OUTPUT_PATH: "/outputs/visualisations/kepler/"
+
+IMD_ENGLAND_PATH: "/inputs/deprivation_data/England_IMD.csv"
+IMD_WALES_PATH: "/inputs/deprivation_data/Wales_IMD.csv"
+IMD_SCOTLAND_PATH: "/inputs/deprivation_data/Scotland_IMD.csv"
 
 EPC_FEAT_SELECTION:
   [
