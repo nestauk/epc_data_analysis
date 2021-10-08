@@ -14,7 +14,7 @@ import re
 from hashlib import md5
 
 from epc_data_analysis import getters
-from epc_data_analysis.pipeline import data_cleaning
+from epc_data_analysis.pipeline.preprocessing import data_cleaning
 
 # ---------------------------------------------------------------------------------
 

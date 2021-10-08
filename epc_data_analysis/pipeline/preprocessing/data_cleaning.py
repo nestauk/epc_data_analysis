@@ -172,6 +172,7 @@ def standardise_constr_age(age, adjust_age_bands=True):
         "England and Wales: 2007-2011": "2007 onwards",
         "England and Wales: 2007 onwards": "2007 onwards",
         "England and Wales: 2012 onwards": "2007 onwards",
+        "before 1919": "Scotland: before 1919",
         "2021": "2007 onwards",
         "2020": "2007 onwards",
         "2019": "2007 onwards",
