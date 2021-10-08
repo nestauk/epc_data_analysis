@@ -242,6 +242,7 @@ preproc_feature_selection = [
     "CONSTRUCTION_AGE_BAND",
     "BUILT_FORM",
     "POSTTOWN",
+    "POSTCODE",
     "CURRENT_ENERGY_RATING",
     "MAINHEAT_DESCRIPTION",
     "INSPECTION_DATE",
@@ -252,6 +253,7 @@ preproc_feature_selection = [
     "MAINS_GAS_FLAG",
     "COUNTRY",
     "HP_INSTALLED",
+    "ENTRY_YEAR",
     "ENTRY_YEAR_INT",
     "HP_TYPE",
     "CO2_EMISSIONS_CURRENT",
@@ -262,6 +264,9 @@ preproc_feature_selection = [
     "BUILDING_REFERENCE_NUMBER",
     "N_ENTRIES_BUILD_ID",
     "N_ENTRIES",
+    "HEATING_SYSTEM",
+    "HEATING_SOURCE",
+    "NUMBER_HABITABLE_ROOMS",
 ]
 
 
