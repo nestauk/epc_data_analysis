@@ -9,7 +9,7 @@ Last updated on 05/08/2021
 
 import h3
 import pandas as pd
-from epc_data_analysis.pipeline import feature_engineering
+from epc_data_analysis.pipeline.preprocessing import feature_engineering
 
 
 def add_hex_id(df, resolution=7.5):
@@ -98,7 +98,9 @@ def get_cat_distr_grouped_by_agglo_f(df, feature, agglo_feature="hex_id"):
     return cat_percentages_by_agglo_f
 
 
-def get_agglomerated_features(df, feature=None, agglo_feature="hex_id", year=None):
+def get_agglomerated_features(
+    df, feature=None, agglo_feature="hex_id", year_stamp=None
+):
 
     has_new_feature = False
 
@@ -150,6 +152,8 @@ def get_agglomerated_features(df, feature=None, agglo_feature="hex_id", year=Non
         df, "HP_INSTALLED", agglo_feature=agglo_feature
     )
 
+    print(hp_grouped_by_agglo_f.head())
+
     hp_grouped_by_agglo_f["HP_PERC"] = hp_grouped_by_agglo_f[True] * 100
     del hp_grouped_by_agglo_f[False]
     del hp_grouped_by_agglo_f[True]
@@ -164,16 +168,24 @@ def get_agglomerated_features(df, feature=None, agglo_feature="hex_id", year=Non
         epc_grouped_by_agglo_f, hp_grouped_by_agglo_f, on=[agglo_feature]
     )
 
-    if year is not None:
-        grouped_by_agglo_f["YEAR_STAMP"] = str(year) + "/01/01 00:00"
+    if year_stamp is not None:
+        # print(year)
 
-    emissions_mean = df.groupby(agglo_feature)["CO2_EMISSIONS_CURRENT"].mean()
-    grouped_by_agglo_f = pd.merge(
-        grouped_by_agglo_f, emissions_mean, on=[agglo_feature]
-    )
+        # year_stamp = str(year) + "/01/01 00:00"
+        grouped_by_agglo_f["YEAR_STAMP"] = year_stamp
 
-    costs_mean = df.groupby(agglo_feature)["HEATING_COST_CURRENT"].mean()
-    grouped_by_agglo_f = pd.merge(grouped_by_agglo_f, costs_mean, on=[agglo_feature])
+    if "CO2_EMISSIONS_CURRENT" in df.columns:
+
+        emissions_mean = df.groupby(agglo_feature)["CO2_EMISSIONS_CURRENT"].mean()
+        grouped_by_agglo_f = pd.merge(
+            grouped_by_agglo_f, emissions_mean, on=[agglo_feature]
+        )
+
+    if "HEATING_COST_CURRENT" in df.columns:
+        costs_mean = df.groupby(agglo_feature)["HEATING_COST_CURRENT"].mean()
+        grouped_by_agglo_f = pd.merge(
+            grouped_by_agglo_f, costs_mean, on=[agglo_feature]
+        )
 
     return grouped_by_agglo_f
 
@@ -257,14 +269,18 @@ def HP_cat(perc):
     elif perc > 2.0 and perc <= 5.0:
         return "2.0 - 5.0 %"
 
-    elif perc > 5.0 and perc <= 10.0:
-        return "5.0 - 10.0 %"
+    elif perc > 5.0 and perc <= 7:
+        return "5.0 % +"
 
-    elif perc > 10.0 and perc <= 20.0:
-        return "10.0 - 20.0 %"
 
-    elif perc > 20.0 and perc <= 100.0:
-        return "20.0 - 100.0 %"
+# elif perc > 7.0 and perc <= 10:
+#    return "7.0 - 10.0 %"
+
+# elif perc > 10.0 and perc <= 20.0:
+#     return "10.0 - 20.0 %"
+
+# elif perc > 20.0 and perc <= 100.0:
+#     return "20.0 - 100.0 %"
 
 
 """
