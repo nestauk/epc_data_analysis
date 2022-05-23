@@ -53,7 +53,7 @@ def extract_data(file_path):
         print("Done!")
 
 
-def load_Scotland_data(usecols=None, low_memory=False):
+def load_scotland_data(usecols=None, nrows=None, low_memory=False):
     """Load the Scotland EPC data.
 
     Parameters
@@ -61,6 +61,9 @@ def load_Scotland_data(usecols=None, low_memory=False):
     usecols : list, default=None
         List of features/columns to load from EPC dataset.
         If None, then all features will be loaded.
+
+    nrows : int, default=None
+        Number of rows of file to read.
 
     low_memory : bool, default=False
         Internally process the file in chunks, resulting in lower memory use while parsing,
@@ -89,11 +92,12 @@ def load_Scotland_data(usecols=None, low_memory=False):
     all_directories = os.listdir(RAW_SCOTLAND_DATA_PATH)
     directories = [file for file in all_directories if file.endswith(".csv")]
 
-    EPC_certs = [
+    epc_certs = [
         pd.read_csv(
             RAW_SCOTLAND_DATA_PATH + file,
             low_memory=low_memory,
             usecols=usecols,
+            nrows=nrows,
             skiprows=1,  # don't load first row (more ellaborate feature names),
             encoding="ISO-8859-1",
         )
@@ -101,10 +105,10 @@ def load_Scotland_data(usecols=None, low_memory=False):
     ]
 
     # Concatenate single dataframes into dataframe
-    EPC_certs = pd.concat(EPC_certs, axis=0)
-    EPC_certs["COUNTRY"] = "Scotland"
+    epc_certs = pd.concat(epc_certs, axis=0)
+    epc_certs["COUNTRY"] = "Scotland"
 
-    EPC_certs = EPC_certs.rename(
+    epc_certs = epc_certs.rename(
         columns={
             "WALL_ENV_EFF": "WALLS_ENV_EFF",
             "WALL_ENERGY_EFF": "WALLS_ENERGY_EFF",
@@ -112,10 +116,10 @@ def load_Scotland_data(usecols=None, low_memory=False):
         }
     )
 
-    return EPC_certs
+    return epc_certs
 
 
-def load_Wales_England_data(subset=None, usecols=None, low_memory=False):
+def load_wales_england_data(subset=None, usecols=None, nrows=None, low_memory=False):
     """Load the England and/or Wales EPC data.
 
     Parameters
@@ -127,6 +131,9 @@ def load_Wales_England_data(subset=None, usecols=None, low_memory=False):
     usecols : list, default=None
         List of features/columns to load from EPC dataset.
         If None, then all features will be loaded.
+
+    nrows : int, default=None
+        Number of rows of file to read.
 
     low_memory : bool, default=False
         Internally process the file in chunks, resulting in lower memory use while parsing,
@@ -162,23 +169,24 @@ def load_Wales_England_data(subset=None, usecols=None, low_memory=False):
 
     # Load EPC certificates for given subset
     # Only load columns of interest (if given)
-    EPC_certs = [
+    epc_certs = [
         pd.read_csv(
             RAW_ENG_WALES_DATA_PATH + directory + "/certificates.csv",
             low_memory=low_memory,
             usecols=usecols,
+            nrows=nrows,
         )
         for directory in directories
     ]
 
     # Concatenate single dataframes into dataframe
-    EPC_certs = pd.concat(EPC_certs, axis=0)
-    EPC_certs["COUNTRY"] = subset
+    epc_certs = pd.concat(epc_certs, axis=0)
+    epc_certs["COUNTRY"] = subset
 
-    return EPC_certs
+    return epc_certs
 
 
-def load_raw_epc_data(subset="GB", usecols=None, low_memory=False):
+def load_raw_epc_data(subset="GB", usecols=None, nrows=None, low_memory=False):
     """Load and return EPC dataset, or specific subset, as pandas dataframe.
 
     Parameters
@@ -189,6 +197,9 @@ def load_raw_epc_data(subset="GB", usecols=None, low_memory=False):
     usecols : list, default=None
         List of features/columns to load from EPC dataset.
         If None, then all features will be loaded.
+
+    nrows : int, default=None
+        Number of rows of file to read.
 
     low_memory : bool, default=False
         Internally process the file in chunks, resulting in lower memory use while parsing,
@@ -204,7 +215,7 @@ def load_raw_epc_data(subset="GB", usecols=None, low_memory=False):
 
     # Get Scotland data
     if subset in ["Scotland", "GB"]:
-        epc_Scotland_df = load_Scotland_data(usecols=usecols)
+        epc_Scotland_df = load_scotland_data(usecols=usecols, nrows=nrows)
         all_epc_df.append(epc_Scotland_df)
 
         if subset == "Scotland":
@@ -212,7 +223,9 @@ def load_raw_epc_data(subset="GB", usecols=None, low_memory=False):
 
     # Get the Wales/England data
     if subset in ["Wales", "England"]:
-        epc_df = load_Wales_England_data(subset, usecols=usecols, low_memory=low_memory)
+        epc_df = load_wales_england_data(
+            subset, usecols=usecols, nrows=nrows, low_memory=low_memory
+        )
         return epc_df
 
     # Merge the two datasets for GB
@@ -220,8 +233,8 @@ def load_raw_epc_data(subset="GB", usecols=None, low_memory=False):
 
         for country in ["Wales", "England"]:
 
-            epc_df = load_Wales_England_data(
-                country, usecols=usecols, low_memory=low_memory
+            epc_df = load_wales_england_data(
+                country, usecols=usecols, nrows=nrows, low_memory=low_memory
             )
             all_epc_df.append(epc_df)
 
@@ -233,7 +246,7 @@ def load_raw_epc_data(subset="GB", usecols=None, low_memory=False):
         raise IOError("'{}' is not a valid subset of the EPC dataset.".format(subset))
 
 
-def load_cleansed_EPC(remove_duplicates=True, usecols=None):
+def load_cleansed_epc(remove_duplicates=True, usecols=None, nrows=None):
     """Load the cleansed EPC dataset (provided by EST)
     with the option of excluding/including duplicates.
 
@@ -245,6 +258,9 @@ def load_cleansed_EPC(remove_duplicates=True, usecols=None):
     usecols : list, default=None
         List of features/columns to load from EPC dataset.
         If None, then all features will be loaded.
+
+    nrows : int, default=None
+        Number of rows of file to read.
 
     Return
     ----------
@@ -261,7 +277,9 @@ def load_cleansed_EPC(remove_duplicates=True, usecols=None):
         extract_data(file_path + ".zip")
 
     print("Loading cleansed EPC data... This will take a moment.")
-    cleansed_epc = pd.read_csv(file_path, usecols=usecols, low_memory=False)
+    cleansed_epc = pd.read_csv(
+        file_path, usecols=usecols, nrows=nrows, low_memory=False
+    )
 
     # Drop first column
     if "Unnamed: 0" in cleansed_epc.columns:
@@ -275,7 +293,11 @@ def load_cleansed_EPC(remove_duplicates=True, usecols=None):
 
 
 def load_preprocessed_epc_data(
-    version="preprocessed_dedupl", usecols=None, snapshot_data=False, low_memory=False
+    version="preprocessed_dedupl",
+    usecols=None,
+    nrows=None,
+    snapshot_data=False,
+    low_memory=False,
 ):
     """Load the EPC dataset including England, Wales and Scotland.
     Select one of the following versions:
@@ -297,6 +319,10 @@ def load_preprocessed_epc_data(
     usecols : list, default=None
         List of features/columns to load from EPC dataset.
         If None, then all features will be loaded.
+
+    nrows : int, default=None
+        Number of rows of file to read.
+
 
     snapshot_data : bool, default=False
         If True, load the snapshot version of the preprocessed EPC data saved in /inputs
@@ -329,7 +355,7 @@ def load_preprocessed_epc_data(
         extract_data(file_path + ".zip")
 
     # Load  data
-    epc_df = pd.read_csv(file_path, usecols=usecols, low_memory=low_memory)
+    epc_df = pd.read_csv(file_path, usecols=usecols, nrows=nrows, low_memory=low_memory)
 
     return epc_df
 
