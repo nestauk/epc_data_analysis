@@ -250,7 +250,11 @@ column_widgets = my_widgets.get_custom_widget(
 @interact(category=column_widgets)
 def plot_EPC_rarting_distribution(category):
     easy_plotting.plot_subcategory_distribution(
-        epc_wimd_df, category, normalize=True, y_label="# dwellings"
+        epc_wimd_df,
+        category,
+        normalize=True,
+        y_label="Properties",
+        plot_title="Distribution of Tenure Types",
     )
 
 
@@ -281,11 +285,26 @@ def plot_IMD_by_sectors(feature):
         epc_wimd_df,
         "TENURE",
         feature,
-        feature_1_order=tenure_type_order,
-        y_label="# dwellings",
+        feature_1_order=["owner-occupied", "rental (private)", "rental (social)"],
+        y_label="Properties",
         plotting_colors="RdYlGn",
-        plot_title="{} by tenure type".format(feature),
+        y_ticklabel_type="%",
+        plot_title="Wales IMD by Tenure Type (%)".format(feature),
     )
+
+
+# %%
+easy_plotting.plot_subcats_by_other_subcats(
+    epc_wimd_df,
+    "WIMD Decile",
+    "CURRENT_ENERGY_RATING",
+    feature_2_order=rating_order,
+    # feature_1_order=['owner-occupied', 'rental (private)', 'rental (social)'],
+    y_label="# dwellings",
+    plotting_colors="RdYlGn",
+    y_ticklabel_type="%",
+    # plot_title="Wales IMD by Tenure Type (%)".format(feature),
+)
 
 
 # %% [markdown]
@@ -573,7 +592,7 @@ def plot_CO2_emissions(feature_1, feature_2):
     filename = "{} {} (relative)".format(descr_part_1, descr_part_2)
     filename = re.sub(" ", "_", filename)
 
-    plt.savefig(FIG_PATH + filename)
+    plt.savefig(FIG_PATH + filename, dpi=500)
     plt.show()
 
     # Plot absolute emissions
@@ -616,7 +635,7 @@ def plot_CO2_emissions(feature_1, feature_2):
     filename = "{} {} (absolute)".format(descr_part_1, descr_part_2)
     filename = re.sub(" ", "_", filename)
 
-    plt.savefig(FIG_PATH + filename)
+    plt.savefig(FIG_PATH + filename, dpi=500)
     plt.show()
 
     # Plot emissions per dwelling
@@ -656,7 +675,8 @@ def plot_CO2_emissions(feature_1, feature_2):
     filename = "{} per Dwelling {}".format(descr_part_1, descr_part_2)
     filename = re.sub(" ", "_", filename)
 
-    plt.savefig(FIG_PATH + filename)
+    # plt, plot_title=None, file_extension=".jpg", dpi=700)
+    plt.savefig(FIG_PATH + filename, dpi=500)
     plt.show()
 
 
@@ -731,5 +751,50 @@ def plot_feature_subcats_by_other_feature_subcats(feature_1, feature_2):
         epc_wimd_df, feature_1, feature_2, plotting_colors="RdYlGn"
     )
 
+
+# %%
+country_order = ["England", "Scotland", "Wales"]
+efficiency_order = ["unknown", "Very Poor", "Poor", "Average", "Good", "Very Good"]
+tenure_order = ["owner-occupied", "rental (private)", "rental (social)"]  # , 'unknown']
+prop_type_order = ["House", "Bungalow", "Park home", "Maisonette", "Flat"]
+year_order = [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+]
+rating_order = [
+    "G",
+    "F",
+    "E",
+    "D",
+    "C",
+    "B",
+    "A",
+]  # ["A", "B", "C", "D", "E", "F", "G"]
+
+# %%
+
+easy_plotting.plot_subcats_by_other_subcats(
+    epc_wimd_df,
+    "TENURE",
+    "CURRENT_ENERGY_RATING",
+    feature_1_order=tenure_order,
+    feature_2_order=rating_order,
+    plotting_colors="RdYlGn",
+    plot_title="Current Energy Rating by Sector (Wales)",
+    y_ticklabel_type="%",
+)
+
+# %%
 
 # %%
