@@ -265,8 +265,9 @@ preproc_feature_selection = [
     "N_ENTRIES_BUILD_ID",
     "N_ENTRIES",
     "HEATING_SYSTEM",
-    "HEATING_SOURCE",
+    "HEATING_FUEL",
     "NUMBER_HABITABLE_ROOMS",
+    "TOTAL_FLOOR_AREA",
 ]
 
 
