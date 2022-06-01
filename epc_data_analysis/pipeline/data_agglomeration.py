@@ -75,6 +75,7 @@ def get_cat_distr_grouped_by_agglo_f(df, feature, agglo_feature="hex_id"):
 
     # Count the samples per agglomeration feature category
     n_samples_agglo_cat = grouped_by_agglo_f[feature].count()
+    feature_counts_agglo = df.groupby([agglo_feature])[feature].sum()
 
     # Get the feature categories by the agglomeration feature
     feature_cats_by_agglo_f = (
@@ -152,8 +153,6 @@ def get_agglomerated_features(
         df, "HP_INSTALLED", agglo_feature=agglo_feature
     )
 
-    print(hp_grouped_by_agglo_f.head())
-
     hp_grouped_by_agglo_f["HP_PERC"] = hp_grouped_by_agglo_f[True] * 100
     del hp_grouped_by_agglo_f[False]
     del hp_grouped_by_agglo_f[True]
@@ -169,9 +168,6 @@ def get_agglomerated_features(
     )
 
     if year_stamp is not None:
-        # print(year)
-
-        # year_stamp = str(year) + "/01/01 00:00"
         grouped_by_agglo_f["YEAR_STAMP"] = year_stamp
 
     if "CO2_EMISSIONS_CURRENT" in df.columns:
@@ -185,6 +181,14 @@ def get_agglomerated_features(
         costs_mean = df.groupby(agglo_feature)["HEATING_COST_CURRENT"].mean()
         grouped_by_agglo_f = pd.merge(
             grouped_by_agglo_f, costs_mean, on=[agglo_feature]
+        )
+
+    if "HP_INSTALLED" in df.columns:
+
+        hp_total = df.groupby(agglo_feature)["HP_INSTALLED"].sum()
+        grouped_by_agglo_f = pd.merge(grouped_by_agglo_f, hp_total, on=[agglo_feature])
+        grouped_by_agglo_f.rename(
+            columns={"HP_INSTALLED": "HP_INSTALLED_PER_AREA"}, inplace=True
         )
 
     return grouped_by_agglo_f
